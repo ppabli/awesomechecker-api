@@ -1,20 +1,20 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from 'typeorm';
 import { Base } from './base';
 import { ProductPage } from './productPage';
 
 @Entity("review", { schema: Base.schemaName })
 export class Review extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "productPage": ProductPage, "value": Number, "currency": String };
+	public static necessaryPostParams: Record<string, any> = { "productPageId": Number, "value": Number, "currency": String };
 
 	@ManyToOne(() => ProductPage, productPage => productPage.reviews)
-	productPage: ProductPage;
+	@JoinColumn({ name: "productPageId" })
+	productPageId: ProductPage;
 
 	@Column()
 	value: number;
 
 	@Column()
 	currency: string;
-
 
 }

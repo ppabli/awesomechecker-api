@@ -8,17 +8,18 @@ import { Review } from './review';
 @Entity("productPage", { schema: Base.schemaName })
 export class ProductPage extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "category": Category, "product": Product, "page": String, "url": String };
+	public static necessaryPostParams: Record<string, any> = { "productId": Number, "pageId": Number, "url": String };
 
 	@ManyToOne(() => Product, product => product.productPages)
-	product: Product;
+	@JoinColumn({ name: "productId" })
+	productId: Product;
 
-	@OneToMany(() => Review, review => review.productPage)
+	@OneToMany(() => Review, review => review.productPageId)
 	reviews: Review[];
 
 	@OneToOne(type => Page)
-	@JoinColumn()
-	page: Page;
+	@JoinColumn({ name: "pageId" })
+	pageId: Page;
 
 	@Column()
 	url: string;

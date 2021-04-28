@@ -17,34 +17,34 @@ function checkNecessaryParams(req: Request, res: Response, next: NextFunction) {
 
 	switch (objectName) {
 
-		case "category":
+		case "categories":
 
 			requiredParams = Category.necessaryPostParams;
 
 			break;
 
-		case "page":
+		case "pages":
 
 			requiredParams = Page.necessaryPostParams;
 
 			break;
 
-		case "product":
+		case "products":
 
 			requiredParams = Product.necessaryPostParams;
 			break;
 
-		case "productPage":
+		case "productPages":
 
 			requiredParams = ProductPage.necessaryPostParams;
 			break;
 
-		case "review":
+		case "reviews":
 
 			requiredParams = Review.necessaryPostParams;
 			break;
 
-		case "reviewAttribute":
+		case "reviewAttributes":
 
 			requiredParams = ReviewAttribute.necessaryPostParams;
 			break;
@@ -61,7 +61,7 @@ function checkNecessaryParams(req: Request, res: Response, next: NextFunction) {
 
 		let invalidDataTypes = TypeChecker.validateDataTypes(requiredParams, req.body);
 
-		if (!invalidDataTypes) {
+		if (!invalidDataTypes.length) {
 
 			next();
 

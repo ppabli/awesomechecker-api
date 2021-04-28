@@ -5,10 +5,11 @@ import { Page } from './page';
 @Entity("reviewAttribute", { schema: Base.schemaName })
 export class ReviewAttribute extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "page": Page, "key": String, "value": String };
+	public static necessaryPostParams: Record<string, any> = { "pageId": Number, "key": String, "value": String };
 
 	@ManyToOne(() => Page, page => page.reviewAttributes)
-	page: Page;
+	@JoinColumn({ name: "pageId" })
+	pageId: Page;
 
 	@Column()
 	key: string;

@@ -1,6 +1,8 @@
 function diff(array1: any[], array2: any[]): any[] {
 
-	let a = [], final = [];
+	let a: boolean[] = [];
+
+	let final: any[] = [];
 
 	for (let i = 0; i < array1.length; i++) {
 

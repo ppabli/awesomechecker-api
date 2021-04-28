@@ -1,9 +1,9 @@
-import { RouteInterface } from "../route.interface";
 import { RequestHandler } from 'express';
+import { postNewReview } from "../../controllers/post_controller";
+import { RouteInterface } from "../route.interface";
+import { checkNecessaryParams } from "../../middlewares/middlewares"
 
-import { getAllReviewsAttributes } from "../../controllers/get_controller"
-
-class AllReviewsAttributes implements RouteInterface {
+class NewReview implements RouteInterface {
 
 	private path: string;
 	private method: RequestHandler;
@@ -12,10 +12,10 @@ class AllReviewsAttributes implements RouteInterface {
 
 	constructor() {
 
-		this.path = "/reviewAttributes";
-		this.method = getAllReviewsAttributes;
-		this.requestMethod = "get";
-		this.middlewares = [];
+		this.path = "/reviews";
+		this.method = postNewReview;
+		this.requestMethod = "post";
+		this.middlewares = [checkNecessaryParams];
 
 	}
 
@@ -43,4 +43,4 @@ class AllReviewsAttributes implements RouteInterface {
 
 	};
 
-} export { AllReviewsAttributes }
+} export { NewReview };

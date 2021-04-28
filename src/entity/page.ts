@@ -16,7 +16,7 @@ export class Page extends Base {
 	@Column()
 	reviewInside: boolean;
 
-	@Column()
+	@Column({ nullable: true })
 	reviewInsideTag: string;
 
 	@OneToMany(() => ReviewAttribute, reviewAttribute => reviewAttribute.page)

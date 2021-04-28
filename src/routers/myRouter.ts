@@ -12,6 +12,9 @@ import { AllProductsPages } from '../routes/get/allProductsPages';
 import { AllReviews } from '../routes/get/allReviews';
 import { AllReviewsAttributes } from '../routes/get/allReviewsAttributes';
 
+// * Post routes
+import { NewReview } from '../routes/post/newReview';
+
 class MyRouter implements RouterInterface {
 
 	private router: Router = Router();
@@ -27,6 +30,9 @@ class MyRouter implements RouterInterface {
 		new AllProductsPages(),
 		new AllReviews(),
 		new AllReviewsAttributes(),
+
+		// ! Post routes!
+		new NewReview(),
 
 	];
 

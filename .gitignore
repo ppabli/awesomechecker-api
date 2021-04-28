@@ -9,3 +9,4 @@ api.yaml
 ormconfig.json
 docs/
 dist/
+logs/
