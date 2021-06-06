@@ -1,6 +1,5 @@
 import { BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm';
-
-export class Base extends BaseEntity {
+class Base extends BaseEntity {
 
 	protected static schemaName = "awesomechecker"
 
@@ -14,3 +13,5 @@ export class Base extends BaseEntity {
 	lastUpdateTimestamp: Date;
 
 }
+
+export { Base };

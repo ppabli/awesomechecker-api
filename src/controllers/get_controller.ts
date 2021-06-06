@@ -5,15 +5,17 @@ import { Product } from '../entity/product';
 import { ProductPage } from '../entity/productPage';
 import { Review } from '../entity/review';
 import { ReviewAttribute } from '../entity/reviewAttribute';
+import { Info } from '../models/info.model';
 
-// ! All data routes
-function getAPIInfo(req: Request, res: Response) {
+async function getAPIInfo(req: Request, res: Response): Promise<Response<any>> {
 
-	return res.json("Info!");
+	let info = new Info();
+	let data = await info.getAllInfo()
+	return res.json(data);
 
 }
 
-async function getAllCategories(req: Request, res: Response) {
+async function getAllCategories(req: Request, res: Response): Promise<Response<any>> {
 
 	let categories = await Category.find();
 
@@ -21,7 +23,7 @@ async function getAllCategories(req: Request, res: Response) {
 
 }
 
-async function getAllPages(req: Request, res: Response) {
+async function getAllPages(req: Request, res: Response): Promise<Response<any>> {
 
 	let pages = await Page.find();
 
@@ -29,33 +31,33 @@ async function getAllPages(req: Request, res: Response) {
 
 }
 
-async function getAllProducts(req: Request, res: Response) {
+async function getAllProducts(req: Request, res: Response): Promise<Response<any>> {
 
-	let products = await Product.find(req.query);
+	let products = await Product.find();
 
 	return res.json(products);
 
 }
 
-async function getAllProductsPages(req: Request, res: Response) {
+async function getAllProductsPages(req: Request, res: Response): Promise<Response<any>> {
 
-	let productsPages = await ProductPage.find();
+	let productsPages = await ProductPage.find({ relations: ['product', 'page'] });
 
 	return res.json(productsPages);
 
 }
 
-async function getAllReviews(req: Request, res: Response) {
+async function getAllReviews(req: Request, res: Response): Promise<Response<any>> {
 
-	let reviews = await Review.find();
+	let reviews = await Review.find({ relations: ['productPage'] });
 
 	return res.json(reviews);
 
 }
 
-async function getAllReviewsAttributes(req: Request, res: Response) {
+async function getAllReviewsAttributes(req: Request, res: Response): Promise<Response<any>> {
 
-	let reviewAttributes = await ReviewAttribute.find();
+	let reviewAttributes = await ReviewAttribute.find({ relations: ['page'] });
 
 	return res.json(reviewAttributes);
 

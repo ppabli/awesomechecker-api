@@ -1,15 +1,15 @@
-import { Column, Entity, JoinColumn, OneToOne, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Base } from "./base";
 import { Page } from './page';
 
 @Entity("reviewAttribute", { schema: Base.schemaName })
-export class ReviewAttribute extends Base {
+class ReviewAttribute extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "pageId": Number, "key": String, "value": String };
+	public static necessaryPostParams: Record<string, any> = { "page": Number, "key": String, "value": String };
 
 	@ManyToOne(() => Page, page => page.reviewAttributes)
-	@JoinColumn({ name: "pageId" })
-	pageId: Page;
+	@JoinColumn()
+	page: Page;
 
 	@Column()
 	key: string;
@@ -18,3 +18,5 @@ export class ReviewAttribute extends Base {
 	value: string;
 
 }
+
+export { ReviewAttribute };

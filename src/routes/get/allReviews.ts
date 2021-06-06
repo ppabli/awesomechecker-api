@@ -1,17 +1,11 @@
-import { RouteInterface } from "../route.interface";
-import { RequestHandler } from 'express';
+import { getAllReviews } from "../../controllers/get_controller";
+import { BaseRoute } from "../BaseRoute";
 
-import { getAllReviews } from "../../controllers/get_controller"
-
-class AllReviews implements RouteInterface {
-
-	private path: string;
-	private method: RequestHandler;
-	private requestMethod: string;
-	private middlewares: RequestHandler[];
+class AllReviews extends BaseRoute {
 
 	constructor() {
 
+		super();
 		this.path = "/reviews";
 		this.method = getAllReviews;
 		this.requestMethod = "get";
@@ -19,28 +13,5 @@ class AllReviews implements RouteInterface {
 
 	}
 
-	public getPath(): string {
+} export { AllReviews };
 
-		return this.path;
-
-	}
-
-	public getMethod(): RequestHandler {
-
-		return this.method;
-
-	};
-
-	public getRequestMethod(): string {
-
-		return this.requestMethod;
-
-	};
-
-	public getMiddlewares(): RequestHandler[] {
-
-		return this.middlewares;
-
-	};
-
-} export { AllReviews }

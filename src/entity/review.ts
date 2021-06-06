@@ -1,15 +1,15 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Base } from './base';
 import { ProductPage } from './productPage';
 
 @Entity("review", { schema: Base.schemaName })
-export class Review extends Base {
+class Review extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "productPageId": Number, "value": Number, "currency": String };
+	public static necessaryPostParams: Record<string, any> = { "productPage": Number, "value": Number, "currency": String };
 
 	@ManyToOne(() => ProductPage, productPage => productPage.reviews)
-	@JoinColumn({ name: "productPageId" })
-	productPageId: ProductPage;
+	@JoinColumn()
+	productPage: ProductPage;
 
 	@Column()
 	value: number;
@@ -18,3 +18,6 @@ export class Review extends Base {
 	currency: string;
 
 }
+
+export { Review };
+

@@ -15,4 +15,6 @@ class Describer {
 
 	}
 
-} export { Describer }
+}
+
+export { Describer }

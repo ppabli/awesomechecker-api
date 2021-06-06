@@ -2,13 +2,12 @@ import * as express from "express";
 import * as helmet from "helmet";
 import { createConnection } from 'typeorm';
 import { logger } from "./libs/logger";
-import { MyRouter } from "./routers/myRouter";
-import { RouterInterface } from "./routers/router.interface";
+import { MyRouter } from "./myRouter";
 
 export class App {
 
 	private app: express.Application;
-	private router: RouterInterface = new MyRouter();
+	private router: MyRouter = new MyRouter();
 
 	constructor() {
 

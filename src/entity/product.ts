@@ -1,21 +1,23 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
-import { ProductPage } from './productPage';
 import { Base } from './base';
 import { Category } from './category';
+import { ProductPage } from './productPage';
 
 @Entity("product", { schema: Base.schemaName })
-export class Product extends Base {
+class Product extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "categoryId": Number, "name": String };
+	public static necessaryPostParams: Record<string, any> = { "category": Number, "name": String };
 
 	@OneToOne(() => Category)
-	@JoinColumn({ name: "categoryId" })
+	@JoinColumn()
 	category: Category;
 
-	@OneToMany(() => ProductPage, productPage => productPage.pageId)
+	@OneToMany(() => ProductPage, productPage => productPage.id)
 	productPages: ProductPage[];
 
 	@Column()
 	name: string;
 
 }
+
+export { Product };
