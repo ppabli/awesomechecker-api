@@ -11,7 +11,7 @@ class Review extends Base {
 	@JoinColumn()
 	productPage: ProductPage;
 
-	@Column()
+	@Column({ type: "float" })
 	value: number;
 
 	@Column()
