@@ -5,7 +5,8 @@
    "main": "main.js",
    "scripts": {
       "start": "ts-node src/index.ts",
-      "build": "tsc"
+      "build": "tsc",
+	  "test": "echo true"
    },
    "keywords": [],
    "author": "Pablo Liste Cancela",
