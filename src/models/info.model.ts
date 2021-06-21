@@ -22,23 +22,23 @@ class Info {
 
 	}
 
-	getApiInfo() {
-
-		this.apiData = {
-
-			"version": +process.env.npm_package_version,
-			"author": process.env.npm_package_author
-
-		}
-
-	}
-
 	async getSystemInfo() {
 
 		await this.getCpuInfo();
 		await this.getMemInfo();
 		await this.getGpuInfo();
 		await this.getDockerInfo();
+
+	}
+
+	private getApiInfo() {
+
+		this.apiData = {
+
+			"version": process.env.npm_package_version,
+			"author": process.env.npm_package_author_name
+
+		}
 
 	}
 

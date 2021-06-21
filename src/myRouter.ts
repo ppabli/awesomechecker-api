@@ -1,13 +1,15 @@
 import { Router } from 'express';
 import { BaseRoute } from "./routes/BaseRoute";
+import { logger } from "./libs/logger";
+
+import { Info } from "./routes/get/info";
+
 import { AllCategories } from './routes/get/allCategories';
 import { AllPages } from './routes/get/allPages';
 import { AllProducts } from './routes/get/allProducts';
 import { AllProductsPages } from './routes/get/allProductsPages';
 import { AllReviews } from './routes/get/allReviews';
 import { AllReviewsAttributes } from './routes/get/allReviewsAttributes';
-import { logger } from "./libs/logger";
-import { Info } from "./routes/get/info";
 
 import { NewReview } from './routes/post/newReview';
 import { NewCategory } from './routes/post/newCategory';
@@ -16,6 +18,12 @@ import { NewProduct } from './routes/post/newProduct';
 import { NewProductPage } from './routes/post/newProductPage';
 import { NewReviewAttribute } from './routes/post/newReviewAttribute';
 
+import { DeleteReview } from './routes/delete/deleteReview';
+import { DeleteCategory } from './routes/delete/deleteCategory';
+import { DeletePage } from './routes/delete/deletePage';
+import { DeleteProduct } from './routes/delete/deleteProduct';
+import { DeleteProductPage } from './routes/delete/deleteProductPage';
+import { DeleteReviewAttribute } from './routes/delete/deleteReviewAttribute';
 class MyRouter {
 
 	private router: Router = Router();
@@ -39,6 +47,14 @@ class MyRouter {
 		new NewProductPage(),
 		new NewReview(),
 		new NewReviewAttribute(),
+
+		// ! Delete routes!
+		new DeleteCategory(),
+		new DeletePage(),
+		new DeleteProduct(),
+		new DeleteProductPage(),
+		new DeleteReview(),
+		new DeleteReviewAttribute(),
 
 	];
 
