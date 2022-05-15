@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Base } from './base';
 import { ProductPage } from './productPage';
 
-@Entity("review", { schema: Base.schemaName })
+@Entity("reviews", { schema: Base.schemaName })
 class Review extends Base {
 
 	public static necessaryPostParams: Record<string, any> = { "productPage": Number, "value": Number, "currency": String };

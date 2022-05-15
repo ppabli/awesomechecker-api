@@ -3,7 +3,7 @@ import { Base } from './base';
 import { Category } from './category';
 import { ProductPage } from './productPage';
 
-@Entity("product", { schema: Base.schemaName })
+@Entity("products", { schema: Base.schemaName })
 class Product extends Base {
 
 	public static necessaryPostParams: Record<string, any> = { "category": Number, "name": String };

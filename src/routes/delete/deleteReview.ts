@@ -1,12 +1,12 @@
 import { deleteReview } from "../../controllers/delete_controller";
 import { BaseRoute } from '../BaseRoute';
 
-class DeleteProduct extends BaseRoute {
+class DeleteReview extends BaseRoute {
 
 	constructor() {
 
 		super();
-		this.path = "/products/:id";
+		this.path = "/reviews/:id";
 		this.method = deleteReview;
 		this.requestMethod = "delete";
 		this.middlewares = [];
@@ -15,5 +15,5 @@ class DeleteProduct extends BaseRoute {
 
 } 
 
-export { DeleteProduct };
+export { DeleteReview };
 

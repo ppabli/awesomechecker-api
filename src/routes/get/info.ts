@@ -1,4 +1,5 @@
 import { getAPIInfo } from "../../controllers/get_controller";
+import { jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from "../BaseRoute";
 
 class Info extends BaseRoute {
@@ -9,10 +10,10 @@ class Info extends BaseRoute {
 		this.path = "/info";
 		this.method = getAPIInfo;
 		this.requestMethod = "get";
-		this.middlewares = [];
+		this.middlewares = [jwtValidation];
 
 	}
 
-} 
+}
 
 export { Info };

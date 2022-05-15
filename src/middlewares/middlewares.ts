@@ -1,11 +1,13 @@
-import { NextFunction, Request, Response } from 'express';
-import { Category } from '../entity/category';
-import { Page } from '../entity/page';
-import { Product } from '../entity/product';
-import { ProductPage } from '../entity/productPage';
-import { Review } from '../entity/review';
-import { ReviewAttribute } from '../entity/reviewAttribute';
+import { NextFunction, Request, response, Response } from 'express';
+import { Category } from '../entities/category';
+import { Page } from '../entities/page';
+import { Product } from '../entities/product';
+import { ProductPage } from '../entities/productPage';
+import { Review } from '../entities/review';
+import { ReviewAttribute } from '../entities/reviewAttribute';
+import { User } from '../entities/user';
 import { diff } from "../libs/arrayFunctions";
+import { checkExpirationStatus, DecodeResult, decodeSession, encodeSession, ExpirationStatus, Session } from '../libs/sessionsFunctions';
 import { TypeChecker } from "../libs/typeChecker";
 
 function checkNecessaryParams(req: Request, res: Response, next: NextFunction) {
@@ -20,6 +22,12 @@ function checkNecessaryParams(req: Request, res: Response, next: NextFunction) {
 		case "categories":
 
 			requiredParams = Category.necessaryPostParams;
+
+			break;
+
+		case "users":
+
+			requiredParams = User.necessaryPostParams;
 
 			break;
 
@@ -87,5 +95,59 @@ function checkNecessaryParams(req: Request, res: Response, next: NextFunction) {
 
 }
 
-export { checkNecessaryParams };
+function jwtValidation(req: Request, res: Response, next: NextFunction) {
+
+	const unauthorized = (message: string) => res.status(401).json({
+		ok: false,
+		status: 401,
+		message: message
+	});
+
+	const requestHeader = "authorization";
+	const responseHeader = "authorization";
+	const header = req.header(requestHeader);
+
+	if (!header) {
+		unauthorized(`Required ${requestHeader} header not found.`);
+		return;
+	}
+
+	const decodedSession: DecodeResult = decodeSession(header);
+
+	if (decodedSession.type === "integrity-error" || decodedSession.type === "invalid-token") {
+		unauthorized(`Failed to decode or validate authorization token. Reason: ${decodedSession.type}.`);
+		return;
+	}
+
+	const expiration: ExpirationStatus = checkExpirationStatus(decodedSession.session);
+
+	if (expiration === "expired") {
+		unauthorized(`Authorization token has expired. Please create a new authorization token.`);
+		return;
+	}
+
+	let session: Session;
+
+	if (expiration === "grace") {
+		const { token, expires, issued } = encodeSession(decodedSession.session);
+		session = {
+			...decodedSession.session,
+			expires: expires,
+			issued: issued
+		};
+		res.setHeader(responseHeader, token);
+	} else {
+		session = decodedSession.session;
+	}
+
+	response.locals = {
+		...response.locals,
+		session: session
+	};
+
+	next();
+
+}
+
+export { checkNecessaryParams, jwtValidation };
 

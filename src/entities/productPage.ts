@@ -4,7 +4,7 @@ import { Page } from './page';
 import { Product } from './product';
 import { Review } from './review';
 
-@Entity("productPage", { schema: Base.schemaName })
+@Entity("productPages", { schema: Base.schemaName })
 class ProductPage extends Base {
 
 	public static necessaryPostParams: Record<string, any> = { "product": Number, "page": Number, "url": String };

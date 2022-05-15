@@ -1,13 +1,15 @@
 import { Router } from 'express';
 import { BaseRoute } from "./routes/BaseRoute";
+import { logger } from "./libs/logger";
+
+import { Info } from "./routes/get/info";
+
 import { AllCategories } from './routes/get/allCategories';
 import { AllPages } from './routes/get/allPages';
 import { AllProducts } from './routes/get/allProducts';
 import { AllProductsPages } from './routes/get/allProductsPages';
 import { AllReviews } from './routes/get/allReviews';
 import { AllReviewsAttributes } from './routes/get/allReviewsAttributes';
-import { logger } from "./libs/logger";
-import { Info } from "./routes/get/info";
 
 import { NewReview } from './routes/post/newReview';
 import { NewCategory } from './routes/post/newCategory';
@@ -15,12 +17,22 @@ import { NewPage } from './routes/post/newPage';
 import { NewProduct } from './routes/post/newProduct';
 import { NewProductPage } from './routes/post/newProductPage';
 import { NewReviewAttribute } from './routes/post/newReviewAttribute';
+import { Login } from './routes/post/login';
+
+import { DeleteReview } from './routes/delete/deleteReview';
+import { DeleteCategory } from './routes/delete/deleteCategory';
+import { DeletePage } from './routes/delete/deletePage';
+import { DeleteProduct } from './routes/delete/deleteProduct';
+import { DeleteProductPage } from './routes/delete/deleteProductPage';
+import { DeleteReviewAttribute } from './routes/delete/deleteReviewAttribute';
+import { NewUser } from './routes/post/newUser';
 
 class MyRouter {
 
-	private router: Router = Router();
-	private API_VERSION: number = +(process.env.npm_package_version.split(".")[0]);
-	private API_PATH: string = `/api/v${this.API_VERSION}/`
+	private router: Router;
+	private API_VERSION: number;
+	private API_PATH: string;
+	private API_FULL_PATH: string;
 	private routes: BaseRoute[] = [
 
 		// ! Get routes!
@@ -39,15 +51,32 @@ class MyRouter {
 		new NewProductPage(),
 		new NewReview(),
 		new NewReviewAttribute(),
+		new NewUser(),
+		new Login(),
+
+		// ! Delete routes!
+		new DeleteCategory(),
+		new DeletePage(),
+		new DeleteProduct(),
+		new DeleteProductPage(),
+		new DeleteReview(),
+		new DeleteReviewAttribute(),
 
 	];
 
-	constructor() {
+	constructor(config: any) {
 
-		this.loadRoutes();
+		this.router = Router();
+
+		this.API_VERSION = +(process.env.npm_package_version.split(".")[0]);
+		this.API_PATH = `/api/v${this.API_VERSION}/`;
+		this.API_FULL_PATH = `${config.host}:${config.port}${this.API_PATH}`;
 
 		logger.info(`API version ${this.API_VERSION}`);
 		logger.info(`API path ${this.API_PATH}`);
+		logger.info(`API full path ${this.API_FULL_PATH}`);
+
+		this.loadRoutes();
 
 	}
 

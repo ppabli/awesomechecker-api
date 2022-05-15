@@ -1,12 +1,11 @@
-.idea/
 .vscode/
 node_modules/
 build/
 tmp/
 temp/
 .env
-api.yaml
 ormconfig.json
 docs/
 dist/
 logs/
+package-lock.json

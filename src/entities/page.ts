@@ -3,7 +3,7 @@ import { Base } from './base';
 import { ProductPage } from "./productPage";
 import { ReviewAttribute } from './reviewAttribute';
 
-@Entity("page", { schema: Base.schemaName })
+@Entity("pages", { schema: Base.schemaName })
 class Page extends Base {
 
 	public static necessaryPostParams: Record<string, any> = { "name": String, "reviewTag": String, "reviewInside": Boolean, "reviewInsideTag": String };
