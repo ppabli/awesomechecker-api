@@ -4,8 +4,7 @@ require('dotenv').config()
 
 function start() {
 
-	let app = new App();
-	app.start();
+	new App();
 
 }
 

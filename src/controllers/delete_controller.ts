@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { Category } from "../entity/category";
-import { Page } from "../entity/page";
-import { Product } from "../entity/product";
-import { ProductPage } from "../entity/productPage";
-import { ReviewAttribute } from "../entity/reviewAttribute";
-import { Review } from './../entity/review';
+import { Category } from "../entities/category";
+import { Page } from "../entities/page";
+import { Product } from "../entities/product";
+import { ProductPage } from "../entities/productPage";
+import { ReviewAttribute } from "../entities/reviewAttribute";
+import { Review } from '../entities/review';
 
 async function deleteCategory(req: Request, res: Response): Promise<Response<any>> {
 

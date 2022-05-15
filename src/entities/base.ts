@@ -1,7 +1,7 @@
 import { BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm';
 class Base extends BaseEntity {
 
-	protected static schemaName = "awesomechecker"
+	protected static schemaName = 'awesomechecker';
 
 	@PrimaryGeneratedColumn()
 	id: number;

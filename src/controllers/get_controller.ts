@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { Category } from '../entity/category';
-import { Page } from '../entity/page';
-import { Product } from '../entity/product';
-import { ProductPage } from '../entity/productPage';
-import { Review } from '../entity/review';
-import { ReviewAttribute } from '../entity/reviewAttribute';
+import { Category } from '../entities/category';
+import { Page } from '../entities/page';
+import { Product } from '../entities/product';
+import { ProductPage } from '../entities/productPage';
+import { Review } from '../entities/review';
+import { ReviewAttribute } from '../entities/reviewAttribute';
 import { Info } from '../models/info.model';
 
 async function getAPIInfo(req: Request, res: Response): Promise<Response<any>> {

@@ -8,3 +8,4 @@ ormconfig.json
 docs/
 dist/
 logs/
+package-lock.json
