@@ -10,6 +10,9 @@ import { AllProducts } from './routes/get/allProducts';
 import { AllProductsPages } from './routes/get/allProductsPages';
 import { AllReviews } from './routes/get/allReviews';
 import { AllReviewsAttributes } from './routes/get/allReviewsAttributes';
+import { AllUsers } from './routes/get/AllUsers';
+import { AllTeams } from './routes/get/AllTeams';
+import { AllRoles } from './routes/get/AllRoles';
 
 import { NewReview } from './routes/post/newReview';
 import { NewCategory } from './routes/post/newCategory';
@@ -18,6 +21,7 @@ import { NewProduct } from './routes/post/newProduct';
 import { NewProductPage } from './routes/post/newProductPage';
 import { NewReviewAttribute } from './routes/post/newReviewAttribute';
 import { Login } from './routes/post/login';
+import { NewUser } from './routes/post/newUser';
 
 import { DeleteReview } from './routes/delete/deleteReview';
 import { DeleteCategory } from './routes/delete/deleteCategory';
@@ -25,7 +29,9 @@ import { DeletePage } from './routes/delete/deletePage';
 import { DeleteProduct } from './routes/delete/deleteProduct';
 import { DeleteProductPage } from './routes/delete/deleteProductPage';
 import { DeleteReviewAttribute } from './routes/delete/deleteReviewAttribute';
-import { NewUser } from './routes/post/newUser';
+import { NewRol } from './routes/post/newRol';
+import { NewTeam } from './routes/post/newTeam';
+
 
 class MyRouter {
 
@@ -43,6 +49,9 @@ class MyRouter {
 		new AllReviews(),
 		new AllReviewsAttributes(),
 		new Info(),
+		new AllUsers(),
+		new AllTeams(),
+		new AllRoles(),
 
 		// ! Post routes!
 		new NewCategory(),
@@ -53,6 +62,8 @@ class MyRouter {
 		new NewReviewAttribute(),
 		new NewUser(),
 		new Login(),
+		new NewRol(),
+		new NewTeam(),
 
 		// ! Delete routes!
 		new DeleteCategory(),

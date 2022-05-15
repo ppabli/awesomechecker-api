@@ -7,6 +7,8 @@ import { Product } from "./entities/product";
 import { ProductPage } from "./entities/productPage";
 import { Review } from "./entities/review";
 import { ReviewAttribute } from "./entities/reviewAttribute";
+import { Rol } from "./entities/rol";
+import { Team } from "./entities/team";
 import { User } from "./entities/user";
 import { logger } from "./libs/logger";
 import { MyRouter } from "./myRouter";
@@ -81,7 +83,7 @@ export class App {
 				"logging": false,
 				"synchronize": true,
 				"entities": [
-					Review, ProductPage, Product, Category, Page, ReviewAttribute, User
+					Review, ProductPage, Product, Category, Page, ReviewAttribute, User, Team, Rol
 				],
 				
 			}

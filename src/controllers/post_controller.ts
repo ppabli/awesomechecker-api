@@ -9,6 +9,8 @@ import { User } from "../entities/user";
 import { comparePassword, hashPassword } from "../libs/passwordFunctions";
 import { encodeSession } from "../libs/sessionsFunctions";
 import { UserModel } from "../models/user.model";
+import { Team } from "../entities/team";
+import { Rol } from "../entities/rol";
 
 function postNewCategory(req: Request, res: Response): Response<any> {
 
@@ -28,6 +30,7 @@ function postNewPage(req: Request, res: Response): Response<any> {
 	newPage.reviewTag = req.body.reviewTag;
 	newPage.reviewInside = req.body.reviewInside;
 	newPage.reviewInsideTag = req.body.reviewInsideTag;
+	newPage.team = req.body.team;
 
 	newPage.save();
 
@@ -40,6 +43,8 @@ function postNewProduct(req: Request, res: Response): Response<any> {
 	let newProduct = new Product();
 	newProduct.category = req.body.categoryId;
 	newProduct.name = req.body.name;
+	newProduct.description = req.body.description;
+	newProduct.team = req.body.team;
 
 	newProduct.save();
 
@@ -88,8 +93,6 @@ function postNewReviewAttribute(req: Request, res: Response): Response<any> {
 
 function postNewUser(req: Request, res: Response): Response<any> {
 
-	console.log(req.body);
-
 	let newUser = new User();
 	newUser.user = req.body.user;
 	newUser.email = req.body.email;
@@ -98,6 +101,32 @@ function postNewUser(req: Request, res: Response): Response<any> {
 	newUser.save();
 
 	return res.json(new UserModel(newUser));
+
+}
+
+function postNewTeam(req: Request, res: Response): Response<any> {
+
+	let newTeam = new Team();
+	newTeam.name = req.body.name;
+	newTeam.description = req.body.description;
+	newTeam.token = hashPassword(new Date().toString());
+
+	newTeam.save();
+
+	return res.json(newTeam);
+
+}
+
+function postNewRol(req: Request, res: Response): Response<any> {
+
+	let newRol = new Rol();
+	newRol.name = req.body.name;
+	newRol.description = req.body.description;
+	newRol.token = hashPassword(new Date().toString());
+
+	newRol.save();
+
+	return res.json(newRol);
 
 }
 
@@ -131,15 +160,15 @@ async function login(req: Request, res: Response): Promise<Response<any>> {
 
 	}
 
-	const session = encodeSession({
+	let session = encodeSession({
+		user: new UserModel(dbUser),
 		id: hashPassword(new Date().toString()),
-		dateCreated: Date.now(),
-		user: new UserModel(dbUser)
+		dateCreated: Date.now()
 	});
 
 	res.status(201).json(session);
 
 }
 
-export { postNewCategory, postNewPage, postNewProduct, postNewProductPage, postNewReview, postNewReviewAttribute, postNewUser, login };
+export { postNewCategory, postNewPage, postNewProduct, postNewProductPage, postNewReview, postNewReviewAttribute, postNewUser, postNewTeam, postNewRol, login };
 

@@ -5,6 +5,8 @@ import { Product } from '../entities/product';
 import { ProductPage } from '../entities/productPage';
 import { Review } from '../entities/review';
 import { ReviewAttribute } from '../entities/reviewAttribute';
+import { Rol } from '../entities/rol';
+import { Team } from '../entities/team';
 import { User } from '../entities/user';
 import { diff } from "../libs/arrayFunctions";
 import { checkExpirationStatus, DecodeResult, decodeSession, encodeSession, ExpirationStatus, Session } from '../libs/sessionsFunctions';
@@ -57,6 +59,16 @@ function checkNecessaryParams(req: Request, res: Response, next: NextFunction) {
 			requiredParams = ReviewAttribute.necessaryPostParams;
 			break;
 
+		case "roles":
+
+			requiredParams = Rol.necessaryPostParams;
+			break;
+
+		case "teams":
+
+			requiredParams = Team.necessaryPostParams;
+			break;
+
 		default:
 
 			break;
@@ -89,7 +101,7 @@ function checkNecessaryParams(req: Request, res: Response, next: NextFunction) {
 
 	} else {
 
-		res.status(400).json({ status: "error", statusCode: 400, message: `Unable to create review resource. This fields must be provided: ${differences.join(', ')}` });
+		res.status(400).json({ status: "error", statusCode: 400, message: `Unable to create review resource. This fields must be provided or should not be passed: ${differences.join(', ')}` });
 
 	}
 
@@ -149,5 +161,53 @@ function jwtValidation(req: Request, res: Response, next: NextFunction) {
 
 }
 
-export { checkNecessaryParams, jwtValidation };
+function requireGlobalAdmin(req: Request, res: Response, next: NextFunction) {
+
+	if (response.locals.session.isGlobalAdmin) {
+
+		next();
+
+	} else {
+
+		res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
+
+	}
+
+}
+
+async function isAllowed(req: Request, res: Response, next: NextFunction) {
+
+	if (response.locals.session.isGlobalAdmin) {
+
+		next();
+
+	} else {
+
+		let url = req.url.split(/\//g);
+		let objectName = url[url.length - 1];
+		let method = req.method;
+
+		let teamId = Number(req.query.teamId);
+
+		if (!teamId) {
+
+			teamId = await Team.findOne({ where: { token: process.env.DEFAULT_TEAM_TOKEN } }).then(team => team.id);
+
+		}
+
+		if (response.locals.session.user.isAllowedTo(method, objectName, teamId)) {
+
+			next();
+
+		} else {
+
+			res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
+
+		}
+
+	}
+
+}
+
+export { checkNecessaryParams, jwtValidation, requireGlobalAdmin, isAllowed };
 
