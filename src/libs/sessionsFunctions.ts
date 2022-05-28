@@ -4,8 +4,8 @@ import { UserModel } from '../models/user.model';
 class Session {
 
 	id: number;
-	dateCreated: number;
 	user: UserModel;
+	dateCreated: number;
 	issued: number;
 	expires: number;
 

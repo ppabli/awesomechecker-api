@@ -1,4 +1,5 @@
 import { getAllTeams } from "../../controllers/get_controller";
+import { filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from "../BaseRoute";
 
 class AllTeams extends BaseRoute {
@@ -9,7 +10,7 @@ class AllTeams extends BaseRoute {
 		this.path = "/teams/:teamId";
 		this.method = getAllTeams;
 		this.requestMethod = "get";
-		this.middlewares = [];
+		this.middlewares = [jwtValidation, filterAccesibleData];
 
 	}
 

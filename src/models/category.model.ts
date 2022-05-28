@@ -5,6 +5,7 @@ class CategoryModel extends BaseModel {
 
 	private name: string;
 	private description: string;
+	private teamId: number;
 
 	constructor(category: Category) {
 
@@ -12,6 +13,7 @@ class CategoryModel extends BaseModel {
 
 		this.name = category.name;
 		this.description = category.description;
+		this.teamId = category.teamId;
 
 	}
 
@@ -21,6 +23,10 @@ class CategoryModel extends BaseModel {
 
 	public getDescription(): string {
 		return this.description;
+	}
+
+	public getTeamId(): number {
+		return this.teamId;
 	}
 
 }

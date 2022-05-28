@@ -1,4 +1,5 @@
 import { getAllUsers } from "../../controllers/get_controller";
+import { filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from "../BaseRoute";
 
 class AllUsers extends BaseRoute {
@@ -9,7 +10,7 @@ class AllUsers extends BaseRoute {
 		this.path = "/users";
 		this.method = getAllUsers;
 		this.requestMethod = "get";
-		this.middlewares = [];
+		this.middlewares = [jwtValidation, filterAccesibleData];
 
 	}
 

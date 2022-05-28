@@ -7,14 +7,19 @@ import { Team } from "./team";
 @Entity("pages", { schema: Base.schemaName })
 class Page extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "name": String, "reviewTag": String, "reviewInside": Boolean, "reviewInsideTag": String };
+	public static necessaryPostParams: Record<string, any> = { "teamId": Number, "name": String,"reviewTag": String, "reviewInside": Boolean, "reviewInsideTag": String };
 
-	@ManyToOne(() => Team, team => team.products)
-	@JoinColumn()
+	@Column()
+	teamId: number;
+
+	@ManyToOne(() => Team, team => team.pages)
 	team: Team;
 
 	@Column()
 	name: string;
+
+	@Column({ nullable: true })
+	description: string;
 
 	@Column()
 	reviewTag: string;
@@ -25,10 +30,10 @@ class Page extends Base {
 	@Column({ nullable: true })
 	reviewInsideTag: string;
 
-	@OneToMany(() => ReviewAttribute, reviewAttribute => reviewAttribute.id)
+	@OneToMany(() => ReviewAttribute, reviewAttribute => reviewAttribute.page)
 	reviewAttributes: ReviewAttribute[];
 
-	@OneToMany(() => ProductPage, productPage => productPage.id)
+	@OneToMany(() => ProductPage, productPage => productPage.page)
 	productPages: ProductPage[];
 
 }

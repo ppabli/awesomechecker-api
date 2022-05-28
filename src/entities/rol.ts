@@ -6,7 +6,7 @@ import { User } from './user';
 @Entity("roles", { schema: Base.schemaName })
 class Rol extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "name": String, "team": Number };
+	public static necessaryPostParams: Record<string, any> = { "teamId": Number, "name": String, "description": String};
 
 	@ManyToMany(() => User, user => user.roles)
 	@JoinTable({
@@ -16,8 +16,10 @@ class Rol extends Base {
 	})
 	users: User[];
 
+	@Column()
+	teamId: number;
+
 	@ManyToOne(() => Team, team => team.roles)
-	@JoinColumn()
 	team: Team;
 
 	@Column()
@@ -133,7 +135,7 @@ class Rol extends Base {
 
 	@Column({ default: false })
 	canCreateReviewAttribute: boolean;
-	
+
 	@Column({ default: false })
 	canRemoveReviewAttribute: boolean;
 

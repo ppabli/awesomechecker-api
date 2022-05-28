@@ -9,21 +9,25 @@ class Product extends Base {
 
 	public static necessaryPostParams: Record<string, any> = { "category": Number, "name": String };
 
+	@Column()
+	teamId: number;
+
 	@ManyToOne(() => Team, team => team.products)
-	@JoinColumn()
 	team: Team;
 
-	@OneToOne(() => Category)
-	@JoinColumn()
+	@Column()
+	categoryId: number;
+
+	@ManyToOne(() => Category, category => category.products)
 	category: Category;
 
-	@OneToMany(() => ProductPage, productPage => productPage.id)
+	@OneToMany(() => ProductPage, productPage => productPage.product)
 	productPages: ProductPage[];
 
 	@Column()
 	name: string;
 
-	@Column()
+	@Column({ nullable: true })
 	description: string;
 
 }

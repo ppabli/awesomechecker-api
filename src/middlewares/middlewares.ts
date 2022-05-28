@@ -1,4 +1,4 @@
-import { NextFunction, Request, response, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { Category } from '../entities/category';
 import { Page } from '../entities/page';
 import { Product } from '../entities/product';
@@ -11,8 +11,10 @@ import { User } from '../entities/user';
 import { diff } from "../libs/arrayFunctions";
 import { checkExpirationStatus, DecodeResult, decodeSession, encodeSession, ExpirationStatus, Session } from '../libs/sessionsFunctions';
 import { TypeChecker } from "../libs/typeChecker";
+import { RolModel } from '../models/rol.model';
+import { TeamModel } from '../models/team.model';
 
-function checkNecessaryParams(req: Request, res: Response, next: NextFunction) {
+function checkNecessaryParams(req: Request, res: Response, next: NextFunction): Response<any> {
 
 	let url = req.url.split(/\//g);
 	let objectName = url[url.length - 1];
@@ -95,47 +97,38 @@ function checkNecessaryParams(req: Request, res: Response, next: NextFunction) {
 
 			}
 
-			res.status(400).json({ status: "error", statusCode: 400, message: `Unable to create review resource. This field was provided with the wrong data type: ${text}` });
+			return res.status(400).json({ status: "error", statusCode: 400, message: `Unable to create review resource. This field was provided with the wrong data type: ${text}` });
 
 		}
 
 	} else {
 
-		res.status(400).json({ status: "error", statusCode: 400, message: `Unable to create review resource. This fields must be provided or should not be passed: ${differences.join(', ')}` });
+		return res.status(400).json({ status: "error", statusCode: 400, message: `Unable to create review resource. This fields must be provided: ${differences.join(', ')}` });
 
 	}
 
 }
 
-function jwtValidation(req: Request, res: Response, next: NextFunction) {
-
-	const unauthorized = (message: string) => res.status(401).json({
-		ok: false,
-		status: 401,
-		message: message
-	});
+function jwtValidation(req: Request, res: Response, next: NextFunction): Response<any> {
 
 	const requestHeader = "authorization";
 	const responseHeader = "authorization";
 	const header = req.header(requestHeader);
 
 	if (!header) {
-		unauthorized(`Required ${requestHeader} header not found.`);
-		return;
+		return res.status(403).json({ status: "error", statusCode: 403, message: `Required ${requestHeader} header not found.` });
 	}
 
 	const decodedSession: DecodeResult = decodeSession(header);
 
 	if (decodedSession.type === "integrity-error" || decodedSession.type === "invalid-token") {
-		unauthorized(`Failed to decode or validate authorization token. Reason: ${decodedSession.type}.`);
-		return;
+		return res.status(403).json({ status: "error", statusCode: 403, message: `Failed to decode or validate authorization token. Reason: ${decodedSession.type}.` });
 	}
 
 	const expiration: ExpirationStatus = checkExpirationStatus(decodedSession.session);
 
 	if (expiration === "expired") {
-		unauthorized(`Authorization token has expired. Please create a new authorization token.`);
-		return;
+		return res.status(403).json({ status: "error", statusCode: 403, message: "Authorization token has expired. Please create a new authorization token." });
 	}
 
 	let session: Session;
@@ -152,8 +145,8 @@ function jwtValidation(req: Request, res: Response, next: NextFunction) {
 		session = decodedSession.session;
 	}
 
-	response.locals = {
-		...response.locals,
+	res.locals = {
+		...res.locals,
 		session: session
 	};
 
@@ -161,23 +154,23 @@ function jwtValidation(req: Request, res: Response, next: NextFunction) {
 
 }
 
-function requireGlobalAdmin(req: Request, res: Response, next: NextFunction) {
+function requireGlobalAdmin(req: Request, res: Response, next: NextFunction): Response<any> {
 
-	if (response.locals.session.isGlobalAdmin) {
+	if (res.locals.session.user.globalAdmin) {
 
 		next();
 
 	} else {
 
-		res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
+		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
 
 	}
 
 }
 
-async function isAllowed(req: Request, res: Response, next: NextFunction) {
+async function filterAccesibleData(req: Request, res: Response, next: NextFunction): Promise<Response<any>> {
 
-	if (response.locals.session.isGlobalAdmin) {
+	if (res.locals.session.user.globalAdmin) {
 
 		next();
 
@@ -187,21 +180,78 @@ async function isAllowed(req: Request, res: Response, next: NextFunction) {
 		let objectName = url[url.length - 1];
 		let method = req.method;
 
-		let teamId = Number(req.query.teamId);
+		let dbUser = await User.findOne({
+			where: {
+				id: res.locals.session.user.id
+			}, relations: ["roles", "teams"]
+		});
 
-		if (!teamId) {
+		let filteredTeams: TeamModel[] = [];
 
-			teamId = await Team.findOne({ where: { token: process.env.DEFAULT_TEAM_TOKEN } }).then(team => team.id);
+		if (dbUser.teams && dbUser.roles) {
+
+			for (let team of dbUser.teams) {
+
+				let filteredRoles = dbUser.roles.filter(role => role.teamId === team.id);
+
+				for (let role of filteredRoles) {
+
+					let parsedRol = new RolModel(role);
+					let rolData;
+
+					switch (method.toLowerCase()) {
+
+						case "get":
+
+							rolData = parsedRol.getGetPermissions();
+
+							break;
+
+						case "post":
+
+							rolData = parsedRol.getPostPermissions();
+
+							break;
+
+						case "put":
+
+							rolData = parsedRol.getPutPermissions();
+
+							break;
+
+						case "delete":
+
+							rolData = parsedRol.getDeletePermissions();
+
+							break;
+
+						default:
+
+							break;
+
+					}
+
+					if (rolData[objectName] || parsedRol.getTeamAdmin()) {
+
+						filteredTeams.push(new TeamModel(team));
+						break;
+
+					}
+
+				}
+
+			}
 
 		}
 
-		if (response.locals.session.user.isAllowedTo(method, objectName, teamId)) {
+		if (filteredTeams) {
 
+			res.locals.session.user.teams = filteredTeams;
 			next();
 
 		} else {
 
-			res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
+			return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
 
 		}
 
@@ -209,5 +259,4 @@ async function isAllowed(req: Request, res: Response, next: NextFunction) {
 
 }
 
-export { checkNecessaryParams, jwtValidation, requireGlobalAdmin, isAllowed };
-
+export { checkNecessaryParams, jwtValidation, requireGlobalAdmin, filterAccesibleData };

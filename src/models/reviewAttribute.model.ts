@@ -7,7 +7,7 @@ class ReviewAttributeModel extends BaseModel {
 
 	private key: string;
 	private value: string;
-	private page: PageModel;
+	private pageId: number;
 
 	constructor(reviewAttribute: ReviewAttribute) {
 
@@ -15,7 +15,7 @@ class ReviewAttributeModel extends BaseModel {
 
 		this.key = reviewAttribute.key;
 		this.value = reviewAttribute.value;
-		this.page = new PageModel(reviewAttribute.page);
+		this.pageId = reviewAttribute.pageId;
 
 	}
 
@@ -27,8 +27,8 @@ class ReviewAttributeModel extends BaseModel {
 		return this.value;
 	}
 
-	public getPage(): PageModel {
-		return this.page;
+	public getPageId(): number {
+		return this.pageId;
 	}
 
 }

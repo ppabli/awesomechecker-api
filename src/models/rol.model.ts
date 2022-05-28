@@ -1,16 +1,12 @@
 import { Rol } from "../entities/rol";
 import { BaseModel } from "./base.model";
-import { TeamModel } from "./team.model";
-import { UserModel } from "./user.model";
 
 class RolModel extends BaseModel {
 
 	private name: string;
 	private description: string;
-	private users: UserModel[];
-	private team: TeamModel;
 	private token: string;
-
+	private teamId: number;
 	// Permissions
 	private teamAdmin: boolean;
 	private canGetUsers: boolean;
@@ -57,7 +53,9 @@ class RolModel extends BaseModel {
 		this.name = rol.name;
 		this.description = rol.description;
 		this.token = rol.token;
+		this.teamId = rol.teamId;
 
+		this.teamAdmin = rol.teamAdmin;
 		this.canGetUsers = rol.canGetUsers;
 		this.canAddUser = rol.canAddUser;
 		this.canRemoveUser = rol.canRemoveUser;
@@ -95,27 +93,21 @@ class RolModel extends BaseModel {
 		this.canRemoveReviewAttribute = rol.canRemoveReviewAttribute;
 		this.canEditReviewAttribute = rol.canEditReviewAttribute;
 
-		for (let user of rol.users) {
-			this.users.push(new UserModel(user));
-		}
-
-		this.team = new TeamModel(rol.team);
-
 	}
 
 	public getPutPermissions() {
 
 		return {
 
-			'user': this.canEditUser,
-			'team': this.canEditTeam,
-			'rol': this.canEditRol,
-			'category': this.canEditCategory,
-			'page': this.canEditPage,
-			'product': this.canEditProduct,
-			'productPage': this.canEditProductPage,
-			'review': this.canEditReview,
-			'reviewAttribute': this.canEditReviewAttribute
+			'user': this.canEditUser && this.canGetUsers,
+			'team': this.canEditTeam && this.canGetTeams,
+			'rol': this.canEditRol && this.canGetRoles,
+			'category': this.canEditCategory && this.canGetCategories,
+			'page': this.canEditPage && this.canGetPages,
+			'product': this.canEditProduct && this.canGetProducts,
+			'productPage': this.canEditProductPage && this.canGetProductPages,
+			'review': this.canEditReview && this.canGetReviews,
+			'reviewAttribute': this.canEditReviewAttribute && this.canGetReviewAttributes
 
 		};
 
@@ -142,14 +134,15 @@ class RolModel extends BaseModel {
 
 		return {
 
-			'teams': this.canCreateTeam,
-			'roles': this.canCreateRol,
-			'categories': this.canCreateCategory,
-			'pages': this.canCreatePage,
-			'products': this.canCreateProduct,
-			'productPages': this.canCreateProductPage,
-			'reviews': this.canCreateReview,
-			'reviewAttributes': this.canCreateReviewAttribute
+			'user': this.canAddUser && this.canGetUsers,
+			'teams': this.canCreateTeam && this.canGetTeams,
+			'roles': this.canCreateRol && this.canGetRoles,
+			'categories': this.canCreateCategory && this.canGetCategories,
+			'pages': this.canCreatePage && this.canGetPages,
+			'products': this.canCreateProduct && this.canGetProducts,
+			'productPages': this.canCreateProductPage && this.canGetProductPages,
+			'reviews': this.canCreateReview && this.canGetReviews,
+			'reviewAttributes': this.canCreateReviewAttribute && this.canGetReviewAttributes
 		};
 
 	}
@@ -158,15 +151,15 @@ class RolModel extends BaseModel {
 
 		return {
 
-			'users': this.canRemoveUser,
-			'teams': this.canRemoveTeam,
-			'roles': this.canRemoveRol,
-			'categories': this.canRemoveCategory,
-			'pages': this.canRemovePage,
-			'products': this.canRemoveProduct,
-			'productPages': this.canRemoveProductPage,
-			'reviews': this.canRemoveReview,
-			'reviewAttributes': this.canRemoveReviewAttribute
+			'users': this.canRemoveUser && this.canGetUsers,
+			'teams': this.canRemoveTeam && this.canGetTeams,
+			'roles': this.canRemoveRol && this.canGetRoles,
+			'categories': this.canRemoveCategory && this.canGetCategories,
+			'pages': this.canRemovePage && this.canGetPages,
+			'products': this.canRemoveProduct && this.canGetProducts,
+			'productPages': this.canRemoveProductPage && this.canGetProductPages,
+			'reviews': this.canRemoveReview && this.canGetReviews,
+			'reviewAttributes': this.canRemoveReviewAttribute && this.canGetReviewAttributes
 
 		};
 
@@ -180,16 +173,12 @@ class RolModel extends BaseModel {
 		return this.description;
 	}
 
-	public getUsers(): UserModel[] {
-		return this.users;
-	}
-
-	public getTeam(): TeamModel {
-		return this.team;
-	}
-
 	public getToken(): string {
 		return this.token;
+	}
+
+	public getTeamId(): number {
+		return this.teamId;
 	}
 
 	public getTeamAdmin(): boolean {

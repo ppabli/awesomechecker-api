@@ -1,23 +1,34 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import { Base } from './base';
 import { Page } from './page';
 import { Product } from './product';
 import { Review } from './review';
+import { Team } from "./team";
 
 @Entity("productPages", { schema: Base.schemaName })
 class ProductPage extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "product": Number, "page": Number, "url": String };
+	public static necessaryPostParams: Record<string, any> = { "teamId": Number, "product": Number, "page": Number, "url": String };
+
+	@Column()
+	teamId: number;
+
+	@ManyToOne(() => Team, team => team.pages)
+	team: Team;
+
+	@Column()
+	productId: number;
 
 	@ManyToOne(() => Product, product => product.productPages)
-	@JoinColumn()
 	product: Product;
 
-	@OneToMany(() => Review, review => review.id)
+	@OneToMany(() => Review, review => review.productPage)
 	reviews: Review[];
 
+	@Column()
+	pageId: number;
+
 	@ManyToOne(() => Page, page => page.productPages)
-	@JoinColumn()
 	page: Page;
 
 	@Column()

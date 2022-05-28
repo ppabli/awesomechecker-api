@@ -10,9 +10,7 @@ class PageModel extends BaseModel {
 	private reviewTag: string;
 	private reviewInside: boolean;
 	private reviewInsideTag: string;
-	private reviewAttributes: ReviewAttributeModel[];
-	private productPages: ProductPageModel[];
-	private team: TeamModel;
+	private teamId: number;
 
 	constructor(page: Page) {
 
@@ -22,16 +20,7 @@ class PageModel extends BaseModel {
 		this.reviewTag = page.reviewTag;
 		this.reviewInside = page.reviewInside;
 		this.reviewInsideTag = page.reviewInsideTag;
-
-		for (let reviewAttribute of page.reviewAttributes) {
-			this.reviewAttributes.push(new ReviewAttributeModel(reviewAttribute));
-		}
-
-		for (let productPage of page.productPages) {
-			this.productPages.push(new ProductPageModel(productPage));
-		}
-
-		this.team = new TeamModel(page.team);
+		this.teamId = page.teamId;
 
 	}
 
@@ -51,16 +40,8 @@ class PageModel extends BaseModel {
 		return this.reviewInsideTag;
 	}
 
-	public getReviewAttributes(): ReviewAttributeModel[] {
-		return this.reviewAttributes;
-	}
-
-	public getProductPages(): ProductPageModel[] {
-		return this.productPages;
-	}
-
-	public getTeam(): TeamModel {
-		return this.team;
+	public getTeamId(): number {
+		return this.teamId;
 	}
 
 }

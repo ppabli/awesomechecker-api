@@ -1,5 +1,5 @@
 import { postNewUser } from "../../controllers/post_controller";
-import { checkNecessaryParams } from "../../middlewares/middlewares";
+import { checkNecessaryParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from "../BaseRoute";
 
 class NewUser extends BaseRoute {
@@ -10,7 +10,7 @@ class NewUser extends BaseRoute {
 		this.path = "/users";
 		this.method = postNewUser;
 		this.requestMethod = "post";
-		this.middlewares = [checkNecessaryParams];
+		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
 
 	}
 

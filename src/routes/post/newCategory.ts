@@ -1,5 +1,5 @@
 import { postNewCategory } from "../../controllers/post_controller";
-import { checkNecessaryParams } from "../../middlewares/middlewares";
+import { checkNecessaryParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from "../BaseRoute";
 
 class NewCategory extends BaseRoute {
@@ -10,7 +10,7 @@ class NewCategory extends BaseRoute {
 		this.path = "/categories";
 		this.method = postNewCategory;
 		this.requestMethod = "post";
-		this.middlewares = [checkNecessaryParams];
+		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
 
 	}
 

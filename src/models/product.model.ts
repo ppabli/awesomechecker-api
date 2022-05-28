@@ -8,9 +8,8 @@ class ProductModel extends BaseModel {
 
 	private name: string;
 	private description: string;
-	private team: TeamModel;
-	private category: CategoryModel;
-	private productPages: ProductPageModel[];
+	private teamId: number;
+	private categoryId: number;
 
 	constructor(product: Product) {
 
@@ -18,12 +17,8 @@ class ProductModel extends BaseModel {
 
 		this.name = product.name;
 		this.description = product.description;
-		this.team = new TeamModel(product.team);
-		this.category = new CategoryModel(product.category);
-
-		for (let productPage of product.productPages) {
-			this.productPages.push(new ProductPageModel(productPage));
-		}
+		this.teamId = product.teamId;
+		this.categoryId = product.categoryId;
 
 	}
 
@@ -35,16 +30,12 @@ class ProductModel extends BaseModel {
 		return this.description;
 	}
 
-	public getTeam(): TeamModel {
-		return this.team;
+	public getTeamId(): number {
+		return this.teamId;
 	}
 
-	public getCategory(): CategoryModel {
-		return this.category;
-	}
-
-	public getProductPages(): ProductPageModel[] {
-		return this.productPages;
+	public getCategoryId(): number {
+		return this.categoryId;
 	}
 
 }

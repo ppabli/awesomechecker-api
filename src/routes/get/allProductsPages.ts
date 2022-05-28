@@ -1,4 +1,5 @@
 import { getAllProductsPages } from "../../controllers/get_controller";
+import { filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from '../BaseRoute';
 
 class AllProductsPages extends BaseRoute {
@@ -9,7 +10,7 @@ class AllProductsPages extends BaseRoute {
 		this.path = "/productPages";
 		this.method = getAllProductsPages;
 		this.requestMethod = "get";
-		this.middlewares = [];
+		this.middlewares = [jwtValidation, filterAccesibleData];
 
 	}
 

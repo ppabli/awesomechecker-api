@@ -16,10 +16,6 @@ function diff(array1: any[], array2: any[]): any[] {
 
 			delete a[array2[i]];
 
-		} else {
-
-			a[array2[i]] = true;
-
 		}
 
 	}

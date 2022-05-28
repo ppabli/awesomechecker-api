@@ -9,24 +9,75 @@ import { Review } from '../entities/review';
 async function deleteCategory(req: Request, res: Response): Promise<Response<any>> {
 
 	let deleteCategory = await Category.findOne(req.params.id);
-	await deleteCategory.remove();
-	return res.json(deleteCategory);
+
+	if (deleteCategory) {
+
+		if (res.locals.session.user.teams.find(team => team.id == deleteCategory.team.id)) {
+
+			await Category.remove(deleteCategory);
+			return res.json(deleteCategory);
+
+		} else {
+
+			return res.status(403).json({ message: "Forbidden" });
+
+		}
+
+	} else {
+
+		return res.status(404).json({ message: "Category not found" });
+
+	}
 
 }
 
 async function deletePage(req: Request, res: Response): Promise<Response<any>> {
 
 	let deletePage = await Page.findOne(req.params.id);
-	await deletePage.remove();
-	return res.json(deletePage);
+
+	if (deletePage) {
+
+		if (res.locals.session.user.teams.find(team => team.id == deletePage.team.id)) {
+
+			await Page.remove(deletePage);
+			return res.json(deletePage);
+
+		} else {
+
+			return res.status(403).json({ message: "Forbidden" });
+
+		}
+
+	} else {
+
+		return res.status(404).json({ message: "Page not found" });
+
+	}
 
 }
 
 async function deleteProduct(req: Request, res: Response): Promise<Response<any>> {
 
 	let deleteProduct = await Product.findOne(req.params.id);
-	await deleteProduct.remove();
-	return res.json(deleteProduct);
+
+	if (deleteProduct) {
+
+		if (res.locals.session.user.teams.find(team => team.id == deleteProduct.team.id)) {
+
+			await Product.remove(deleteProduct);
+			return res.json(deleteProduct);
+
+		} else {
+
+			return res.status(403).json({ message: "Forbidden" });
+
+		}
+
+	} else {
+
+		return res.status(404).json({ message: "Product not found" });
+
+	}
 
 }
 
