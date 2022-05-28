@@ -31,7 +31,9 @@ import { DeleteProductPage } from './routes/delete/deleteProductPage';
 import { DeleteReviewAttribute } from './routes/delete/deleteReviewAttribute';
 import { NewRol } from './routes/post/newRol';
 import { NewTeam } from './routes/post/newTeam';
-
+import { DeleteRol } from './routes/delete/deleteRol';
+import { DeleteTeam } from './routes/delete/deleteTeam';
+import { DeleteUser } from './routes/delete/deleteUser';
 
 class MyRouter {
 
@@ -72,6 +74,9 @@ class MyRouter {
 		new DeleteProductPage(),
 		new DeleteReview(),
 		new DeleteReviewAttribute(),
+		new DeleteRol(),
+		new DeleteTeam(),
+		new DeleteUser()
 
 	];
 

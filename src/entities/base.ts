@@ -6,6 +6,9 @@ class Base extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
+	@Column({ default: false })
+	isDeleted: boolean;
+
 	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
 	createdTimestamp: Date;
 

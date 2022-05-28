@@ -1,9 +1,11 @@
 import { User } from './../entities/user';
 import { BaseModel } from './base.model';
+import { SimpleTeamModel } from './team.model';
 
 class UserModel extends BaseModel {
 
 	private user: string;
+	private teams: SimpleTeamModel[];
 	private email: string;
 	private globalAdmin: boolean;
 
@@ -13,6 +15,12 @@ class UserModel extends BaseModel {
 
 		this.user = dbUser.user;
 		this.email = dbUser.email;
+
+		if (dbUser.teams) {
+
+			this.teams = dbUser.teams.map(team => new SimpleTeamModel(team));
+
+		}
 
 		this.globalAdmin = false;
 
@@ -24,6 +32,10 @@ class UserModel extends BaseModel {
 
 	public getEmail(): string {
 		return this.email;
+	}
+
+	public getTeams(): SimpleTeamModel[] {
+		return this.teams;
 	}
 
 	public getGlobalAdmin(): boolean {

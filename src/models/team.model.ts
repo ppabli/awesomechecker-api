@@ -1,28 +1,26 @@
 import { Team } from '../entities/team';
 import { BaseModel } from './base.model';
 
-class TeamModel extends BaseModel {
+class SimpleTeamModel {
 
+	private id: number;
 	private name: string;
-	private description: string;
 	private token: string;
 
-	constructor(team: Team) {
+	constructor(dbTeam: Team) {
 
-		super(team);
+		this.id = dbTeam.id;
+		this.name = dbTeam.name;
+		this.token = dbTeam.token;
 
-		this.name = team.name;
-		this.description = team.description;
-		this.token = team.token;
+	}
 
+	public getId(): number {
+		return this.id;
 	}
 
 	public getName(): string {
 		return this.name;
-	}
-
-	public getDescription(): string {
-		return this.description;
 	}
 
 	public getToken(): string {
@@ -31,4 +29,34 @@ class TeamModel extends BaseModel {
 
 }
 
-export { TeamModel };
+class TeamModel extends BaseModel {
+
+	private name: string;
+	private token: string;
+	private description: string;
+
+	constructor(team: Team) {
+
+		super(team);
+
+		this.name = team.name;
+		this.token = team.token;
+		this.description = team.description;
+
+	}
+
+	public getName(): string {
+		return this.name;
+	}
+
+	public getToken(): string {
+		return this.token;
+	}
+
+	public getDescription(): string {
+		return this.description;
+	}
+
+}
+
+export { SimpleTeamModel, TeamModel };

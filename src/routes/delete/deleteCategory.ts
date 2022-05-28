@@ -1,4 +1,5 @@
 import { deleteCategory } from "../../controllers/delete_controller";
+import { filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from '../BaseRoute';
 
 class DeleteCategory extends BaseRoute {
@@ -9,11 +10,11 @@ class DeleteCategory extends BaseRoute {
 		this.path = "/categories/:id";
 		this.method = deleteCategory;
 		this.requestMethod = "delete";
-		this.middlewares = [];
+		this.middlewares = [jwtValidation, filterAccesibleData, filterAccesibleData];
 
 	}
 
-} 
+}
 
 export { DeleteCategory };
 

@@ -1,4 +1,5 @@
 import { deleteProduct } from "../../controllers/delete_controller";
+import { checkNecessaryDeleteParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from '../BaseRoute';
 
 class DeleteProduct extends BaseRoute {
@@ -9,7 +10,7 @@ class DeleteProduct extends BaseRoute {
 		this.path = "/products/:id";
 		this.method = deleteProduct;
 		this.requestMethod = "delete";
-		this.middlewares = [];
+		this.middlewares = [jwtValidation, checkNecessaryDeleteParams, filterAccesibleData];
 
 	}
 

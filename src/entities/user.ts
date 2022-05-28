@@ -16,6 +16,9 @@ class User extends Base {
 	@Column()
 	password: string;
 
+	@Column({ nullable: true })
+	tempPassword: string;
+
 	@ManyToMany(() => Team, team => team.users)
 	@JoinTable({
 		name: "user_team",

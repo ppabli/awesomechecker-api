@@ -14,6 +14,20 @@ import { TypeChecker } from "../libs/typeChecker";
 import { RolModel } from '../models/rol.model';
 import { TeamModel } from '../models/team.model';
 
+function checkNecessaryDeleteParams(req: Request, res: Response, next: NextFunction): Response<any> {
+
+	if (!req.params.id) {
+
+		return res.status(400).json({ status: "error", statusCode: 400, message: "Unable to delete resource. This field must be provided: id" });
+
+	} else {
+
+		next();
+
+	}
+
+}
+
 function checkNecessaryParams(req: Request, res: Response, next: NextFunction): Response<any> {
 
 	let url = req.url.split(/\//g);
@@ -259,4 +273,4 @@ async function filterAccesibleData(req: Request, res: Response, next: NextFuncti
 
 }
 
-export { checkNecessaryParams, jwtValidation, requireGlobalAdmin, filterAccesibleData };
+export { checkNecessaryParams, checkNecessaryDeleteParams, jwtValidation, requireGlobalAdmin, filterAccesibleData };

@@ -1,6 +1,5 @@
-import { info } from 'console';
 import { Request, Response } from 'express';
-import { Any, In } from 'typeorm';
+import { In } from 'typeorm';
 import { Category } from '../entities/category';
 import { Page } from '../entities/page';
 import { Product } from '../entities/product';
@@ -30,15 +29,20 @@ async function getAllCategories(req: Request, res: Response): Promise<Response<a
 
 	} else {
 
-		categories = await Category.find({ where: { teamId: In(res.locals.session.user.teams.map(team => team.id)) } });
+		categories = await Category.find({
+			where: {
+				teamId: In(res.locals.session.user.teams.map(team => team.id)),
+				isDeleted: false
+			}
+		});
 
 	}
 
 	if (req.query) {
 
-		categories.filter(item => {
+		categories = categories.filter(item => {
 			let isValid = true;
-			for(let key in req.query) {
+			for (let key in req.query) {
 				isValid = isValid && item[key] && item[key] === req.query[key];
 			}
 			return isValid;
@@ -60,15 +64,20 @@ async function getAllPages(req: Request, res: Response): Promise<Response<any>> 
 
 	} else {
 
-		pages = await Page.find({ where: { teamId: In(res.locals.session.user.teams.map(team => team.id)) } });
+		pages = await Page.find({
+			where: {
+				teamId: In(res.locals.session.user.teams.map(team => team.id)),
+				isDeleted: false
+			}
+		});
 
 	}
 
 	if (req.query) {
 
-		pages.filter(item => {
+		pages = pages.filter(item => {
 			let isValid = true;
-			for(let key in req.query) {
+			for (let key in req.query) {
 				isValid = isValid && item[key] && item[key] === req.query[key];
 			}
 			return isValid;
@@ -90,15 +99,20 @@ async function getAllProducts(req: Request, res: Response): Promise<Response<any
 
 	} else {
 
-		products = await Product.find({ where: { teamId: In(res.locals.session.user.teams.map(team => team.id)) } });
+		products = await Product.find({
+			where: {
+				teamId: In(res.locals.session.user.teams.map(team => team.id)),
+				isDeleted: false
+			}
+		});
 
 	}
 
 	if (req.query) {
 
-		products.filter(item => {
+		products = products.filter(item => {
 			let isValid = true;
-			for(let key in req.query) {
+			for (let key in req.query) {
 				isValid = isValid && item[key] && item[key] === req.query[key];
 			}
 			return isValid;
@@ -121,6 +135,9 @@ async function getAllProductsPages(req: Request, res: Response): Promise<Respons
 	} else {
 
 		productPages = await ProductPage.find({
+			where: {
+				isDeleted: false
+			},
 			relations: ['product', 'page']
 		});
 
@@ -134,9 +151,9 @@ async function getAllProductsPages(req: Request, res: Response): Promise<Respons
 
 	if (req.query) {
 
-		productPages.filter(item => {
+		productPages = productPages.filter(item => {
 			let isValid = true;
-			for(let key in req.query) {
+			for (let key in req.query) {
 				isValid = isValid && item[key] && item[key] === req.query[key];
 			}
 			return isValid;
@@ -159,6 +176,9 @@ async function getAllReviews(req: Request, res: Response): Promise<Response<any>
 	} else {
 
 		reviews = await Review.find({
+			where: {
+				isDeleted: false
+			},
 			relations: ['product', 'user']
 		});
 
@@ -172,9 +192,9 @@ async function getAllReviews(req: Request, res: Response): Promise<Response<any>
 
 	if (req.query) {
 
-		reviews.filter(item => {
+		reviews = reviews.filter(item => {
 			let isValid = true;
-			for(let key in req.query) {
+			for (let key in req.query) {
 				isValid = isValid && item[key] && item[key] === req.query[key];
 			}
 			return isValid;
@@ -197,6 +217,9 @@ async function getAllReviewsAttributes(req: Request, res: Response): Promise<Res
 	} else {
 
 		reviewAttributes = await ReviewAttribute.find({
+			where: {
+				isDeleted: false
+			},
 			relations: ['review', 'user']
 		});
 
@@ -210,9 +233,9 @@ async function getAllReviewsAttributes(req: Request, res: Response): Promise<Res
 
 	if (req.query) {
 
-		reviewAttributes.filter(item => {
+		reviewAttributes = reviewAttributes.filter(item => {
 			let isValid = true;
-			for(let key in req.query) {
+			for (let key in req.query) {
 				isValid = isValid && item[key] && item[key] === req.query[key];
 			}
 			return isValid;
@@ -234,15 +257,20 @@ async function getAllTeams(req: Request, res: Response): Promise<Response<any>> 
 
 	} else {
 
-		teams = await Team.find({ where: { id: In(res.locals.session.user.teams.map(team => team.id)) } });
+		teams = await Team.find({
+			where: {
+				id: In(res.locals.session.user.teams.map(team => team.id)),
+				isDeleted: false
+			}
+		});
 
 	}
 
 	if (req.query) {
 
-		teams.filter(item => {
+		teams = teams.filter(item => {
 			let isValid = true;
-			for(let key in req.query) {
+			for (let key in req.query) {
 				isValid = isValid && item[key] && item[key] === req.query[key];
 			}
 			return isValid;
@@ -256,34 +284,33 @@ async function getAllTeams(req: Request, res: Response): Promise<Response<any>> 
 
 async function getAllUsers(req: Request, res: Response): Promise<Response<any>> {
 
-	let users;
+	let users = await User.find({
 
-	if (res.locals.session.user.globalAdmin) {
+		where: {
+			isDeleted: false
+		},
+		relations: ['teams']
 
-		users = await User.find();
+	});
 
-	} else {
+	if (!res.locals.session.user.globalAdmin) {
 
-		users = await User.find({
-
-			relations: ['teams']
-
-		});
-
-		for (let team of res.locals.session.user.teams) {
-
-			users = users.filter(user => user.teams.map(team => team.id).includes(team.id));
-
-		}
-
+		users = users.filter(user => user.teams.some(team => res.locals.session.user.teams.some(sessionTeam => sessionTeam.id === team.id)));
 
 	}
 
 	if (req.query) {
 
-		users.filter(item => {
+		if (req.query.teamId) {
+
+			users = users.filter(user => user.teams.some(team => team.id === Number(req.query.teamId)));
+			delete req.query.teamId;
+
+		}
+
+		users = users.filter(item => {
 			let isValid = true;
-			for(let key in req.query) {
+			for (let key in req.query) {
 				isValid = isValid && item[key] && item[key] === req.query[key];
 			}
 			return isValid;
@@ -297,33 +324,26 @@ async function getAllUsers(req: Request, res: Response): Promise<Response<any>> 
 
 async function getAllRoles(req: Request, res: Response): Promise<Response<any>> {
 
-	let roles;
+	let roles = await Rol.find({
 
-	if (res.locals.session.user.globalAdmin) {
+		where: {
+			isDeleted: false
+		},
+		relations: ['teams']
 
-		roles = await Rol.find();
+	});
 
-	} else {
+	if (!res.locals.session.user.globalAdmin) {
 
-		roles = await Rol.find({
-
-			relations: ['teams']
-
-		});
-
-		for (let team of res.locals.session.user.teams) {
-
-			roles = roles.filter(rol => rol.teams.map(team => team.id).includes(team.id));
-
-		}
+		roles = roles.filter(role => res.locals.session.user.teams.map(team => team.id).includes(role.teamId));
 
 	}
 
 	if (req.query) {
 
-		roles.filter(item => {
+		roles = roles.filter(item => {
 			let isValid = true;
-			for(let key in req.query) {
+			for (let key in req.query) {
 				isValid = isValid && item[key] && item[key] === req.query[key];
 			}
 			return isValid;
