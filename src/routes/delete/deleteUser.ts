@@ -1,5 +1,5 @@
 import { deleteUser } from "../../controllers/delete_controller";
-import { checkNecessaryDeleteParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
+import { checkNecessaryParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from '../BaseRoute';
 
 class DeleteUser extends BaseRoute {
@@ -10,7 +10,7 @@ class DeleteUser extends BaseRoute {
 		this.path = "/users/:id";
 		this.method = deleteUser;
 		this.requestMethod = "delete";
-		this.middlewares = [jwtValidation, checkNecessaryDeleteParams, filterAccesibleData];
+		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
 
 	}
 

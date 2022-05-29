@@ -8,7 +8,7 @@ import { Team } from "./team";
 @Entity("productPages", { schema: Base.schemaName })
 class ProductPage extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "teamId": Number, "product": Number, "page": Number, "url": String };
+	public static necessaryPostParams: Record<string, any> = { "teamId": Number, "productId": Number, "pageId": Number, "url": String };
 
 	@Column()
 	teamId: number;

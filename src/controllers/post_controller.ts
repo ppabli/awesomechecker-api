@@ -73,7 +73,7 @@ async function postNewCategory(req: Request, res: Response): Promise<Response<an
 
 	newCategory.save();
 
-	return res.json(new CategoryModel(newCategory));
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Category created", data: new CategoryModel(newCategory) });
 
 }
 
@@ -158,7 +158,7 @@ async function postNewPage(req: Request, res: Response): Promise<Response<any>> 
 
 	newPage.save();
 
-	return res.json(new PageModel(newPage));
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Page created.", data: new PageModel(newPage) });
 
 }
 
@@ -223,7 +223,7 @@ async function postNewProduct(req: Request, res: Response): Promise<Response<any
 
 	newProduct.save();
 
-	return res.json(new ProductModel(newProduct));
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Product created.", data: new ProductModel(newProduct) });
 
 }
 
@@ -267,7 +267,7 @@ async function postNewProductPage(req: Request, res: Response): Promise<Response
 
 	newProductPage.save();
 
-	return res.json(new ProductPageModel(newProductPage));
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Product page created.", data: new ProductPageModel(newProductPage) });
 
 }
 
@@ -302,7 +302,7 @@ async function postNewReview(req: Request, res: Response): Promise<Response<any>
 
 	newReview.save();
 
-	return res.json(new ReviewModel(newReview));
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Review created.", data: new ReviewModel(newReview) });
 
 }
 
@@ -322,26 +322,39 @@ async function postNewReviewAttribute(req: Request, res: Response): Promise<Resp
 
 	}
 
-	let page = await Page.findOne(req.body.pageId);
+	let pages = await Page.find({
 
-	if (!page) {
+		where: {
+			id: In(req.body.pages)
+		}
 
-		return res.status(403).json({ status: "error", statusCode: 403, message: "Page not found." });
+	});
 
-	} else if (!res.locals.session.user.globalAdmin && !res.locals.session.user.teams.find((team: TeamModel) => team.getId() == page.teamId)) {
+	if (!pages) {
 
-		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
+		return res.status(403).json({ status: "error", statusCode: 403, message: "Pages not found." });
+
+	} else if (!res.locals.session.user.globalAdmin) {
+
+		pages = pages.filter((page: Page) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == page.teamId));
+
+		if (pages.length != req.body.pages.length) {
+
+			return res.status(403).json({ status: "error", statusCode: 403, message: "Pages not found." });
+
+		}
 
 	}
 
 	let newReviewAttribute = new ReviewAttribute();
-	newReviewAttribute.page = req.body.page;
 	newReviewAttribute.key = req.body.key;
 	newReviewAttribute.value = req.body.value;
+	newReviewAttribute.team = req.body.teamId;
+	newReviewAttribute.pages = pages;
 
 	newReviewAttribute.save();
 
-	return res.json(new ReviewAttributeModel(newReviewAttribute));
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Review attribute created.", data: new ReviewAttributeModel(newReviewAttribute) });
 
 }
 
@@ -360,7 +373,7 @@ async function postNewUser(req: Request, res: Response): Promise<Response<any>> 
 
 	newUser.save();
 
-	return res.json(new UserModel(newUser));
+	return res.status(200).json({ status: "success", statusCode: 200, message: "User created.", data: new UserModel(newUser) });
 
 }
 
@@ -373,7 +386,7 @@ async function postNewTeam(req: Request, res: Response): Promise<Response<any>> 
 
 	newTeam.save();
 
-	return res.json(new TeamModel(newTeam));
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Team created.", data: new TeamModel(newTeam) });
 
 }
 
@@ -442,9 +455,6 @@ async function postNewRol(req: Request, res: Response): Promise<Response<any>> {
 	// Optional fields
 	newRol.teamAdmin = req.body.teamAdmin;
 	newRol.canGetUsers = req.body.canGetUsers;
-	newRol.canAddUser = req.body.canAddUser;
-	newRol.canEditUser = req.body.canEditUser;
-	newRol.canRemoveUser = req.body.canRemoveUser;
 	newRol.canGetTeams = req.body.canGetTeams;
 	newRol.canCreateTeam = req.body.canCreateTeam;
 	newRol.canRemoveTeam = req.body.canRemoveTeam;
@@ -480,7 +490,7 @@ async function postNewRol(req: Request, res: Response): Promise<Response<any>> {
 
 	newRol.save();
 
-	return res.json(new RolModel(newRol));
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Rol created.", data: new RolModel(newRol) });
 
 }
 

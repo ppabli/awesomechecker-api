@@ -1,6 +1,5 @@
 import { Review } from "../entities/review";
 import { BaseModel } from "./base.model";
-import { ProductPageModel } from "./productPage.model";
 
 class ReviewModel extends BaseModel {
 

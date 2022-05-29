@@ -1,5 +1,5 @@
 import { deleteReviewAttribute } from "../../controllers/delete_controller";
-import { checkNecessaryDeleteParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
+import { checkNecessaryParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from '../BaseRoute';
 
 class DeleteReviewAttribute extends BaseRoute {
@@ -10,7 +10,7 @@ class DeleteReviewAttribute extends BaseRoute {
 		this.path = "/reviewAttributes/:id";
 		this.method = deleteReviewAttribute;
 		this.requestMethod = "delete";
-		this.middlewares = [jwtValidation, checkNecessaryDeleteParams, filterAccesibleData];
+		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
 
 	}
 

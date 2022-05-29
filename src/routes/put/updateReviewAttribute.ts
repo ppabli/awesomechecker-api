@@ -1,18 +1,18 @@
-import { updateUser } from "../../controllers/put_controller";
+import { updateReviewAttribute } from "../../controllers/put_controller";
 import { checkNecessaryParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from "../BaseRoute";
 
-class UpdateUser extends BaseRoute {
+class UpdateReviewAttribute extends BaseRoute {
 
 	constructor() {
 
 		super();
-		this.path = "/users/:id";
-		this.method = updateUser;
+		this.path = "/reviewAttributes/:id";
+		this.method = updateReviewAttribute;
 		this.requestMethod = "patch";
 		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
 
 	}
 
-} export { UpdateUser };
+} export { UpdateReviewAttribute };
 

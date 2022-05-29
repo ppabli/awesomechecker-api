@@ -1,39 +1,44 @@
 import { Router } from 'express';
-import { BaseRoute } from "./routes/BaseRoute";
 import { logger } from "./libs/logger";
-
-import { Info } from "./routes/get/info";
-
+import { BaseRoute } from "./routes/BaseRoute";
+import { DeleteCategory } from './routes/delete/deleteCategory';
+import { DeletePage } from './routes/delete/deletePage';
+import { DeleteProduct } from './routes/delete/deleteProduct';
+import { DeleteProductPage } from './routes/delete/deleteProductPage';
+import { DeleteReview } from './routes/delete/deleteReview';
+import { DeleteReviewAttribute } from './routes/delete/deleteReviewAttribute';
+import { DeleteRol } from './routes/delete/deleteRol';
+import { DeleteTeam } from './routes/delete/deleteTeam';
+import { DeleteUser } from './routes/delete/deleteUser';
 import { AllCategories } from './routes/get/allCategories';
 import { AllPages } from './routes/get/allPages';
 import { AllProducts } from './routes/get/allProducts';
 import { AllProductsPages } from './routes/get/allProductsPages';
 import { AllReviews } from './routes/get/allReviews';
 import { AllReviewsAttributes } from './routes/get/allReviewsAttributes';
-import { AllUsers } from './routes/get/AllUsers';
-import { AllTeams } from './routes/get/AllTeams';
 import { AllRoles } from './routes/get/AllRoles';
-
-import { NewReview } from './routes/post/newReview';
+import { AllTeams } from './routes/get/AllTeams';
+import { AllUsers } from './routes/get/AllUsers';
+import { Info } from "./routes/get/info";
+import { Login } from './routes/post/login';
 import { NewCategory } from './routes/post/newCategory';
 import { NewPage } from './routes/post/newPage';
 import { NewProduct } from './routes/post/newProduct';
 import { NewProductPage } from './routes/post/newProductPage';
+import { NewReview } from './routes/post/newReview';
 import { NewReviewAttribute } from './routes/post/newReviewAttribute';
-import { Login } from './routes/post/login';
-import { NewUser } from './routes/post/newUser';
-
-import { DeleteReview } from './routes/delete/deleteReview';
-import { DeleteCategory } from './routes/delete/deleteCategory';
-import { DeletePage } from './routes/delete/deletePage';
-import { DeleteProduct } from './routes/delete/deleteProduct';
-import { DeleteProductPage } from './routes/delete/deleteProductPage';
-import { DeleteReviewAttribute } from './routes/delete/deleteReviewAttribute';
 import { NewRol } from './routes/post/newRol';
 import { NewTeam } from './routes/post/newTeam';
-import { DeleteRol } from './routes/delete/deleteRol';
-import { DeleteTeam } from './routes/delete/deleteTeam';
-import { DeleteUser } from './routes/delete/deleteUser';
+import { NewUser } from './routes/post/newUser';
+import { UpdateCategory } from './routes/put/updateCategory';
+import { UpdatePage } from './routes/put/updatePage';
+import { UpdateProduct } from './routes/put/updateProduct';
+import { UpdateProductPage } from './routes/put/updateProductPage';
+import { UpdateReview } from './routes/put/updateReview';
+import { UpdateReviewAttribute } from './routes/put/updateReviewAttribute';
+import { UpdateRol } from './routes/put/updateRol';
+import { UpdateTeam } from './routes/put/updateTeam';
+import { UpdateUser } from './routes/put/updateUser';
 
 class MyRouter {
 
@@ -76,7 +81,19 @@ class MyRouter {
 		new DeleteReviewAttribute(),
 		new DeleteRol(),
 		new DeleteTeam(),
-		new DeleteUser()
+		new DeleteUser(),
+
+		// ! Put routes!
+
+		new UpdateCategory(),
+		new UpdatePage(),
+		new UpdateProductPage(),
+		new UpdateProduct(),
+		new UpdateReview(),
+		new UpdateReviewAttribute(),
+		new UpdateUser(),
+		new UpdateTeam(),
+		new UpdateRol(),
 
 	];
 

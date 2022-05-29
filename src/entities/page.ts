@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 import { Base } from './base';
 import { ProductPage } from "./productPage";
 import { ReviewAttribute } from './reviewAttribute';
@@ -7,7 +7,7 @@ import { Team } from "./team";
 @Entity("pages", { schema: Base.schemaName })
 class Page extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "teamId": Number, "name": String,"reviewTag": String, "reviewInside": Boolean, "reviewInsideTag": String };
+	public static necessaryPostParams: Record<string, any> = { "teamId": Number, "name": String, "reviewTag": String, "reviewInside": Boolean, "reviewInsideTag": String };
 
 	@Column()
 	teamId: number;
@@ -30,7 +30,12 @@ class Page extends Base {
 	@Column({ nullable: true })
 	reviewInsideTag: string;
 
-	@OneToMany(() => ReviewAttribute, reviewAttribute => reviewAttribute.page)
+	@ManyToMany(() => ReviewAttribute, reviewAttribute => reviewAttribute.pages)
+	@JoinTable({
+		name: "page_reviewAttribute",
+		joinColumn: { name: "page_id", referencedColumnName: "id" },
+		inverseJoinColumn: { name: "reviewAttribute_id", referencedColumnName: "id" }
+	})
 	reviewAttributes: ReviewAttribute[];
 
 	@OneToMany(() => ProductPage, productPage => productPage.page)

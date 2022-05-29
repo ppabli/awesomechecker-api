@@ -1,8 +1,5 @@
 import { ProductPage } from "../entities/productPage";
 import { BaseModel } from "./base.model";
-import { PageModel } from "./page.model";
-import { ProductModel } from "./product.model";
-import { ReviewModel } from "./review.model";
 
 class ProductPageModel extends BaseModel {
 

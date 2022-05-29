@@ -9,7 +9,16 @@ import { ReviewAttribute } from '../entities/reviewAttribute';
 import { Rol } from '../entities/rol';
 import { Team } from '../entities/team';
 import { User } from '../entities/user';
+import { CategoryModel } from '../models/category.model';
 import { Info } from '../models/info.model';
+import { PageModel } from '../models/page.model';
+import { ProductModel } from '../models/product.model';
+import { ProductPageModel } from '../models/productPage.model';
+import { ReviewModel } from '../models/review.model';
+import { ReviewAttributeModel } from '../models/reviewAttribute.model';
+import { RolModel } from '../models/rol.model';
+import { TeamModel } from '../models/team.model';
+import { UserModel } from '../models/user.model';
 
 async function getAPIInfo(req: Request, res: Response): Promise<Response<any>> {
 
@@ -50,7 +59,7 @@ async function getAllCategories(req: Request, res: Response): Promise<Response<a
 
 	}
 
-	return res.json(categories);
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Categories fetched", data: categories.map(cat => new CategoryModel(cat)) });
 
 }
 
@@ -85,7 +94,7 @@ async function getAllPages(req: Request, res: Response): Promise<Response<any>> 
 
 	}
 
-	return res.json(pages);
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Pages fetched", data: pages.map(page => new PageModel(page)) });
 
 }
 
@@ -120,7 +129,7 @@ async function getAllProducts(req: Request, res: Response): Promise<Response<any
 
 	}
 
-	return res.json(products);
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Products fetched", data: products.map(product => new ProductModel(product)) });
 
 }
 
@@ -161,7 +170,7 @@ async function getAllProductsPages(req: Request, res: Response): Promise<Respons
 
 	}
 
-	return res.json(productPages);
+	return res.status(200).json({ status: "success", statusCode: 200, message: "ProductPages fetched", data: productPages.map(productPage => new ProductPageModel(productPage)) });
 
 }
 
@@ -202,7 +211,7 @@ async function getAllReviews(req: Request, res: Response): Promise<Response<any>
 
 	}
 
-	return res.json(reviews);
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Reviews fetched", data: reviews.map(review => new ReviewModel(review)) });
 
 }
 
@@ -243,7 +252,7 @@ async function getAllReviewsAttributes(req: Request, res: Response): Promise<Res
 
 	}
 
-	return res.json(reviewAttributes);
+	return res.status(200).json({ status: "success", statusCode: 200, message: "ReviewAttributes fetched", data: reviewAttributes.map(reviewAttribute => new ReviewAttributeModel(reviewAttribute)) });
 
 }
 
@@ -278,7 +287,7 @@ async function getAllTeams(req: Request, res: Response): Promise<Response<any>> 
 
 	}
 
-	return res.json(teams);
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Teams fetched", data: teams.map(team => new TeamModel(team)) });
 
 }
 
@@ -318,7 +327,7 @@ async function getAllUsers(req: Request, res: Response): Promise<Response<any>> 
 
 	}
 
-	return res.json(users);
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Users fetched", data: users.map(user => new UserModel(user)) });
 
 }
 
@@ -351,7 +360,7 @@ async function getAllRoles(req: Request, res: Response): Promise<Response<any>> 
 
 	}
 
-	return res.json(roles);
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Roles fetched", data: roles.map(rol => new RolModel(rol)) });
 
 }
 

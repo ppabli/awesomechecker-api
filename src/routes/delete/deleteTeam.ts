@@ -1,5 +1,5 @@
 import { deleteTeam } from "../../controllers/delete_controller";
-import { checkNecessaryDeleteParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
+import { checkNecessaryParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from '../BaseRoute';
 
 class DeleteTeam extends BaseRoute {
@@ -10,7 +10,7 @@ class DeleteTeam extends BaseRoute {
 		this.path = "/teams/:id";
 		this.method = deleteTeam;
 		this.requestMethod = "delete";
-		this.middlewares = [jwtValidation, checkNecessaryDeleteParams, filterAccesibleData];
+		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
 
 	}
 

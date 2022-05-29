@@ -1,8 +1,5 @@
 import { Product } from "../entities/product";
 import { BaseModel } from "./base.model";
-import { CategoryModel } from "./category.model";
-import { ProductPageModel } from "./productPage.model";
-import { TeamModel } from "./team.model";
 
 class ProductModel extends BaseModel {
 

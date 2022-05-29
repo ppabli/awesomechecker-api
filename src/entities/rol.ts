@@ -38,9 +38,6 @@ class Rol extends Base {
 	canGetUsers: boolean;
 
 	@Column({ default: false })
-	canAddUser: boolean;
-
-	@Column({ default: false })
 	canRemoveUser: boolean;
 
 	@Column({ default: false })

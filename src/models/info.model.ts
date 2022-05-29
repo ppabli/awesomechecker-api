@@ -1,4 +1,4 @@
-import * as si from "systeminformation"
+import * as si from "systeminformation";
 
 class Info {
 
@@ -88,4 +88,4 @@ class Info {
 
 }
 
-export { Info }
+export { Info };

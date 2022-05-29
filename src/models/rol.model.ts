@@ -57,8 +57,6 @@ class RolModel extends BaseModel {
 
 		this.teamAdmin = rol.teamAdmin;
 		this.canGetUsers = rol.canGetUsers;
-		this.canAddUser = rol.canAddUser;
-		this.canRemoveUser = rol.canRemoveUser;
 		this.canEditUser = rol.canEditUser;
 		this.canGetTeams = rol.canGetTeams;
 		this.canCreateTeam = rol.canCreateTeam;

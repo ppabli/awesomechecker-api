@@ -1,20 +1,18 @@
-import { deleteCategory } from "../../controllers/delete_controller";
+import { updateCategory } from "../../controllers/put_controller";
 import { checkNecessaryParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
-import { BaseRoute } from '../BaseRoute';
+import { BaseRoute } from "../BaseRoute";
 
-class DeleteCategory extends BaseRoute {
+class UpdateCategory extends BaseRoute {
 
 	constructor() {
 
 		super();
 		this.path = "/categories/:id";
-		this.method = deleteCategory;
-		this.requestMethod = "delete";
+		this.method = updateCategory;
+		this.requestMethod = "patch";
 		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
 
 	}
 
-}
-
-export { DeleteCategory };
+} export { UpdateCategory };
 

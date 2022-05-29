@@ -14,7 +14,7 @@ import { TypeChecker } from "../libs/typeChecker";
 import { RolModel } from '../models/rol.model';
 import { TeamModel } from '../models/team.model';
 
-function checkNecessaryDeleteParams(req: Request, res: Response, next: NextFunction): Response<any> {
+function checkNecessaryParams(req: Request, res: Response, next: NextFunction): Response<any> {
 
 	if (!req.params.id) {
 
@@ -28,7 +28,7 @@ function checkNecessaryDeleteParams(req: Request, res: Response, next: NextFunct
 
 }
 
-function checkNecessaryParams(req: Request, res: Response, next: NextFunction): Response<any> {
+function checkNecessaryBodyParams(req: Request, res: Response, next: NextFunction): Response<any> {
 
 	let url = req.url.split(/\//g);
 	let objectName = url[url.length - 1];
@@ -273,4 +273,4 @@ async function filterAccesibleData(req: Request, res: Response, next: NextFuncti
 
 }
 
-export { checkNecessaryParams, checkNecessaryDeleteParams, jwtValidation, requireGlobalAdmin, filterAccesibleData };
+export { checkNecessaryBodyParams, checkNecessaryParams, jwtValidation, requireGlobalAdmin, filterAccesibleData };
