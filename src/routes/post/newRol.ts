@@ -1,5 +1,5 @@
 import { postNewRol } from "../../controllers/post_controller";
-import { checkNecessaryParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
+import { checkNecessaryBodyParams, checkNecessaryParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from "../BaseRoute";
 
 class NewRol extends BaseRoute {
@@ -10,7 +10,7 @@ class NewRol extends BaseRoute {
 		this.path = "/roles";
 		this.method = postNewRol;
 		this.requestMethod = "post";
-		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
+		this.middlewares = [jwtValidation, checkNecessaryBodyParams, filterAccesibleData];
 
 	}
 

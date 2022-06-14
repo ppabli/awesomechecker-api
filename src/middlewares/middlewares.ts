@@ -168,41 +168,90 @@ function jwtValidation(req: Request, res: Response, next: NextFunction): Respons
 
 }
 
-function requireGlobalAdmin(req: Request, res: Response, next: NextFunction): Response<any> {
-
-	if (res.locals.session.user.globalAdmin) {
-
-		next();
-
-	} else {
-
-		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
-
-	}
-
-}
-
 async function filterAccesibleData(req: Request, res: Response, next: NextFunction): Promise<Response<any>> {
 
-	if (res.locals.session.user.globalAdmin) {
+	let url = req.url.split(/\//g);
+	let objectName = url[url.length - 1];
+	let method = req.method;
 
-		next();
+	let dbUser = await User.findOne({
+		where: {
+			id: res.locals.session.user.id
+		}, relations: ["roles", "teams"]
+	});
 
-	} else {
+	let filteredTeams: TeamModel[] = [];
 
-		let url = req.url.split(/\//g);
-		let objectName = url[url.length - 1];
-		let method = req.method;
+	if (dbUser.teams && dbUser.roles) {
 
-		let dbUser = await User.findOne({
-			where: {
-				id: res.locals.session.user.id
-			}, relations: ["roles", "teams"]
-		});
+		let adminTeam = dbUser.teams.find(team => team.token === process.env.ADMIN_TEAM_TOKEN);
+		let rolData;
 
-		let filteredTeams: TeamModel[] = [];
+		if (adminTeam) {
 
-		if (dbUser.teams && dbUser.roles) {
+			let adminTeamUserRoles = dbUser.roles.filter(rol => rol.teamId === adminTeam.id);
+			let isAllowed = false;
+
+			if (adminTeamUserRoles.length) {
+
+				for (let role of adminTeamUserRoles) {
+
+					let parsedRol = new RolModel(role);
+
+					switch (method.toLowerCase()) {
+
+						case "get":
+
+							rolData = parsedRol.getGetPermissions();
+
+							break;
+
+						case "post":
+
+							rolData = parsedRol.getPostPermissions();
+
+							break;
+
+						case "put":
+
+							rolData = parsedRol.getPutPermissions();
+
+							break;
+
+						case "delete":
+
+							rolData = parsedRol.getDeletePermissions();
+
+							break;
+
+						default:
+
+							break;
+
+					}
+
+					if (rolData[objectName] || parsedRol.getTeamAdmin()) {
+
+						isAllowed = true;
+						break;
+
+					}
+
+				}
+
+			}
+
+			if (!isAllowed) {
+
+				return res.status(403).json({ status: "error", statusCode: 403, message: "You are not allowed to access this resource." });
+
+			}
+
+			let allTeams = await Team.find();
+
+			filteredTeams = allTeams.map(team => new TeamModel(team));
+
+		} else {
 
 			for (let team of dbUser.teams) {
 
@@ -211,7 +260,6 @@ async function filterAccesibleData(req: Request, res: Response, next: NextFuncti
 				for (let role of filteredRoles) {
 
 					let parsedRol = new RolModel(role);
-					let rolData;
 
 					switch (method.toLowerCase()) {
 
@@ -258,19 +306,19 @@ async function filterAccesibleData(req: Request, res: Response, next: NextFuncti
 
 		}
 
-		if (filteredTeams) {
+	}
 
-			res.locals.session.user.teams = filteredTeams;
-			next();
+	if (filteredTeams) {
 
-		} else {
+		res.locals.session.user.teams = filteredTeams;
+		next();
 
-			return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
+	} else {
 
-		}
+		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
 
 	}
 
 }
 
-export { checkNecessaryBodyParams, checkNecessaryParams, jwtValidation, requireGlobalAdmin, filterAccesibleData };
+export { checkNecessaryBodyParams, checkNecessaryParams, jwtValidation, filterAccesibleData };

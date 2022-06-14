@@ -1,5 +1,5 @@
 import { getAPIInfo } from "../../controllers/get_controller";
-import { requireGlobalAdmin, jwtValidation } from "../../middlewares/middlewares";
+import { jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from "../BaseRoute";
 
 class Info extends BaseRoute {
@@ -10,7 +10,7 @@ class Info extends BaseRoute {
 		this.path = "/info";
 		this.method = getAPIInfo;
 		this.requestMethod = "get";
-		this.middlewares = [jwtValidation, requireGlobalAdmin];
+		this.middlewares = [jwtValidation];
 
 	}
 

@@ -39,6 +39,7 @@ async function deleteCategory(req: Request, res: Response): Promise<Response<any
 
 	}
 
+	category.lastUpdate = new Date();
 	category.isDeleted = true;
 
 	await category.save();
@@ -67,6 +68,7 @@ async function deletePage(req: Request, res: Response): Promise<Response<any>> {
 
 	}
 
+	page.lastUpdate = new Date();
 	page.isDeleted = true;
 
 	await page.save();
@@ -95,6 +97,7 @@ async function deleteProduct(req: Request, res: Response): Promise<Response<any>
 
 	}
 
+	product.lastUpdate = new Date();
 	product.isDeleted = true;
 
 	await product.save();
@@ -123,7 +126,7 @@ async function deleteProductPage(req: Request, res: Response): Promise<Response<
 
 	}
 
-
+	productPage.lastUpdate = new Date();
 	productPage.isDeleted = true;
 
 	await productPage.save();
@@ -153,6 +156,7 @@ async function deleteReview(req: Request, res: Response): Promise<Response<any>>
 
 	}
 
+	review.lastUpdate = new Date();
 	review.isDeleted = true;
 
 	await review.save();
@@ -182,6 +186,7 @@ async function deleteReviewAttribute(req: Request, res: Response): Promise<Respo
 
 	}
 
+	reviewAttribute.lastUpdate = new Date();
 	reviewAttribute.isDeleted = true;
 
 	await reviewAttribute.save();
@@ -210,6 +215,7 @@ async function deleteRol(req: Request, res: Response): Promise<Response<any>> {
 
 	}
 
+	rol.lastUpdate = new Date();
 	rol.isDeleted = true;
 
 	await rol.save();
@@ -238,6 +244,7 @@ async function deleteTeam(req: Request, res: Response): Promise<Response<any>> {
 
 	}
 
+	team.lastUpdate = new Date();
 	team.isDeleted = true;
 
 	await team.save();
@@ -266,6 +273,7 @@ async function deleteUser(req: Request, res: Response): Promise<Response<any>> {
 
 	}
 
+	user.lastUpdate = new Date();
 	user.isDeleted = true;
 
 	await user.save();

@@ -34,6 +34,9 @@ class ProductPage extends Base {
 	@Column()
 	url: string;
 
+	@Column({default: true})
+	active: boolean;
+
 }
 
 export { ProductPage };

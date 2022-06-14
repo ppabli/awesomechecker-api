@@ -1,5 +1,5 @@
 import { postNewReviewAttribute } from "../../controllers/post_controller";
-import { checkNecessaryParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
+import { checkNecessaryBodyParams, checkNecessaryParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from "../BaseRoute";
 
 class NewReviewAttribute extends BaseRoute {
@@ -10,7 +10,7 @@ class NewReviewAttribute extends BaseRoute {
 		this.path = "/reviewAttributes";
 		this.method = postNewReviewAttribute;
 		this.requestMethod = "post";
-		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
+		this.middlewares = [jwtValidation, checkNecessaryBodyParams, filterAccesibleData];
 
 	}
 

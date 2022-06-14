@@ -360,13 +360,26 @@ async function postNewReviewAttribute(req: Request, res: Response): Promise<Resp
 
 async function postNewUser(req: Request, res: Response): Promise<Response<any>> {
 
+	let existingUser = await User.find({
+		where: {
+			email: req.body.email,
+			user: req.body.user
+		}
+	});
+
+	if (existingUser.length) {
+
+		return res.status(400).json({ status: "error", statusCode: 400, message: "User already exists." });
+
+	}
+
 	let newUser = new User();
 	newUser.user = req.body.user;
 	newUser.email = req.body.email;
 	newUser.password = await hashPassword(req.body.password);
 
 	let defaultTeam = await Team.findOne({ token: process.env.DEFAULT_TEAM_TOKEN });
-	let defaultRole = await Rol.findOne({ name: process.env.DEFAULT_ROL_TOKEN });
+	let defaultRole = await Rol.findOne({ token: process.env.DEFAULT_ROL_TOKEN });
 
 	newUser.teams = [defaultTeam];
 	newUser.roles = [defaultRole];
