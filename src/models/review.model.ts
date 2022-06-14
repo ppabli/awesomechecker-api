@@ -3,7 +3,7 @@ import { BaseModel } from "./base.model";
 
 class ReviewModel extends BaseModel {
 
-	private value: number;
+	private value: string;
 	private productPageId: number;
 
 	constructor(review: Review) {
@@ -15,7 +15,7 @@ class ReviewModel extends BaseModel {
 
 	}
 
-	public getValue(): number {
+	public getValue(): string {
 		return this.value;
 	}
 

@@ -8,6 +8,7 @@ class PageModel extends BaseModel {
 	private reviewInside: boolean;
 	private reviewInsideTag: string;
 	private teamId: number;
+	private description: string;
 
 	constructor(page: Page) {
 
@@ -18,7 +19,12 @@ class PageModel extends BaseModel {
 		this.reviewInside = page.reviewInside;
 		this.reviewInsideTag = page.reviewInsideTag;
 		this.teamId = page.teamId;
+		this.description = page.description;
 
+	}
+
+	public getDescription(): string {
+		return this.description;
 	}
 
 	public getName(): string {

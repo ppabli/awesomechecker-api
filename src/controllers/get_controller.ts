@@ -30,22 +30,13 @@ async function getAPIInfo(req: Request, res: Response): Promise<Response<any>> {
 
 async function getAllCategories(req: Request, res: Response): Promise<Response<any>> {
 
-	let categories;
+	let categories = await Category.find({
+		where: {
+			teamId: In(res.locals.session.user.teams.map(team => team.id)),
+			isDeleted: false
+		}
+	});
 
-	if (res.locals.session.user.globalAdmin) {
-
-		categories = await Category.find();
-
-	} else {
-
-		categories = await Category.find({
-			where: {
-				teamId: In(res.locals.session.user.teams.map(team => team.id)),
-				isDeleted: false
-			}
-		});
-
-	}
 
 	if (req.query) {
 
@@ -65,22 +56,12 @@ async function getAllCategories(req: Request, res: Response): Promise<Response<a
 
 async function getAllPages(req: Request, res: Response): Promise<Response<any>> {
 
-	let pages;
-
-	if (res.locals.session.user.globalAdmin) {
-
-		pages = await Page.find();
-
-	} else {
-
-		pages = await Page.find({
-			where: {
-				teamId: In(res.locals.session.user.teams.map(team => team.id)),
-				isDeleted: false
-			}
-		});
-
-	}
+	let pages = await Page.find({
+		where: {
+			teamId: In(res.locals.session.user.teams.map(team => team.id)),
+			isDeleted: false
+		}
+	});
 
 	if (req.query) {
 
@@ -100,22 +81,12 @@ async function getAllPages(req: Request, res: Response): Promise<Response<any>> 
 
 async function getAllProducts(req: Request, res: Response): Promise<Response<any>> {
 
-	let products;
-
-	if (res.locals.session.user.globalAdmin) {
-
-		products = await Product.find();
-
-	} else {
-
-		products = await Product.find({
-			where: {
-				teamId: In(res.locals.session.user.teams.map(team => team.id)),
-				isDeleted: false
-			}
-		});
-
-	}
+	let products = await Product.find({
+		where: {
+			teamId: In(res.locals.session.user.teams.map(team => team.id)),
+			isDeleted: false
+		}
+	});
 
 	if (req.query) {
 
@@ -135,28 +106,13 @@ async function getAllProducts(req: Request, res: Response): Promise<Response<any
 
 async function getAllProductsPages(req: Request, res: Response): Promise<Response<any>> {
 
-	let productPages;
-
-	if (res.locals.session.user.globalAdmin) {
-
-		productPages = await ProductPage.find();
-
-	} else {
-
-		productPages = await ProductPage.find({
-			where: {
-				isDeleted: false
-			},
-			relations: ['product', 'page']
-		});
-
-		for (let team of res.locals.session.user.teams) {
-
-			productPages = productPages.filter(productPage => productPage.product.teamId === team.id && productPage.page.teamId === team.id);
-
-		}
-
-	}
+	let productPages = await ProductPage.find({
+		where: {
+			teamId: In(res.locals.session.user.teams.map(team => team.id)),
+			isDeleted: false
+		},
+		relations: ['product', 'page']
+	});
 
 	if (req.query) {
 
@@ -176,28 +132,13 @@ async function getAllProductsPages(req: Request, res: Response): Promise<Respons
 
 async function getAllReviews(req: Request, res: Response): Promise<Response<any>> {
 
-	let reviews;
-
-	if (res.locals.session.user.globalAdmin) {
-
-		reviews = await Review.find();
-
-	} else {
-
-		reviews = await Review.find({
-			where: {
-				isDeleted: false
-			},
-			relations: ['product', 'user']
-		});
-
-		for (let team of res.locals.session.user.teams) {
-
-			reviews = reviews.filter(review => review.product.teamId === team.id && review.user.teamId === team.id);
-
-		}
-
-	}
+	let reviews = await Review.find({
+		where: {
+			teamId: In(res.locals.session.user.teams.map(team => team.id)),
+			isDeleted: false
+		},
+		relations: ['product']
+	});
 
 	if (req.query) {
 
@@ -217,28 +158,12 @@ async function getAllReviews(req: Request, res: Response): Promise<Response<any>
 
 async function getAllReviewsAttributes(req: Request, res: Response): Promise<Response<any>> {
 
-	let reviewAttributes;
-
-	if (res.locals.session.user.globalAdmin) {
-
-		reviewAttributes = await ReviewAttribute.find();
-
-	} else {
-
-		reviewAttributes = await ReviewAttribute.find({
-			where: {
-				isDeleted: false
-			},
-			relations: ['review', 'user']
-		});
-
-		for (let team of res.locals.session.user.teams) {
-
-			reviewAttributes = reviewAttributes.filter(reviewAttribute => reviewAttribute.review.product.teamId === team.id && reviewAttribute.review.user.teamId === team.id);
-
+	let reviewAttributes = await ReviewAttribute.find({
+		where: {
+			teamId: In(res.locals.session.user.teams.map(team => team.id)),
+			isDeleted: false
 		}
-
-	}
+	});
 
 	if (req.query) {
 
@@ -258,22 +183,12 @@ async function getAllReviewsAttributes(req: Request, res: Response): Promise<Res
 
 async function getAllTeams(req: Request, res: Response): Promise<Response<any>> {
 
-	let teams;
-
-	if (res.locals.session.user.globalAdmin) {
-
-		teams = await Team.find();
-
-	} else {
-
-		teams = await Team.find({
-			where: {
-				id: In(res.locals.session.user.teams.map(team => team.id)),
-				isDeleted: false
-			}
-		});
-
-	}
+	let teams = await Team.find({
+		where: {
+			id: In(res.locals.session.user.teams.map(team => team.id)),
+			isDeleted: false
+		}
+	});
 
 	if (req.query) {
 
@@ -334,19 +249,13 @@ async function getAllUsers(req: Request, res: Response): Promise<Response<any>> 
 async function getAllRoles(req: Request, res: Response): Promise<Response<any>> {
 
 	let roles = await Rol.find({
-
 		where: {
+			teamId: In(res.locals.session.user.teams.map(team => team.id)),
 			isDeleted: false
 		},
 		relations: ['teams']
 
 	});
-
-	if (!res.locals.session.user.globalAdmin) {
-
-		roles = roles.filter(role => res.locals.session.user.teams.map(team => team.id).includes(role.teamId));
-
-	}
 
 	if (req.query) {
 
