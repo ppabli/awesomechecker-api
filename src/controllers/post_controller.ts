@@ -23,7 +23,7 @@ import { UserModel } from "../models/user.model";
 
 async function postNewCategory(req: Request, res: Response): Promise<Response<any>> {
 
-	if (!res.locals.session.user.globalAdmin && !res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
+	if (!res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
 
@@ -51,11 +51,7 @@ async function postNewCategory(req: Request, res: Response): Promise<Response<an
 
 	}
 
-	if (!res.locals.session.user.globalAdmin) {
-
-		existingProducts = existingProducts.filter((product: Product) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == product.teamId));
-
-	}
+	existingProducts = existingProducts.filter((product: Product) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == product.teamId));
 
 	if (existingProducts.length != req.body.products.length) {
 
@@ -68,7 +64,7 @@ async function postNewCategory(req: Request, res: Response): Promise<Response<an
 	let newCategory = new Category();
 	newCategory.name = req.body.name;
 	newCategory.description = req.body.description;
-	newCategory.team = req.body.teamId;
+	newCategory.team = team;
 	newCategory.products = existingProducts;
 
 	newCategory.save();
@@ -79,7 +75,7 @@ async function postNewCategory(req: Request, res: Response): Promise<Response<an
 
 async function postNewPage(req: Request, res: Response): Promise<Response<any>> {
 
-	if (!res.locals.session.user.globalAdmin && !res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
+	if (!res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
 
@@ -107,11 +103,7 @@ async function postNewPage(req: Request, res: Response): Promise<Response<any>> 
 
 	}
 
-	if (!res.locals.session.user.globalAdmin) {
-
-		existingReviewAttributes = existingReviewAttributes.filter((reviewAttribute: ReviewAttribute) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == reviewAttribute.teamId));
-
-	}
+	existingReviewAttributes = existingReviewAttributes.filter((reviewAttribute: ReviewAttribute) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == reviewAttribute.teamId));
 
 	if (existingReviewAttributes.length != req.body.reviewAttributes.length) {
 
@@ -135,11 +127,7 @@ async function postNewPage(req: Request, res: Response): Promise<Response<any>> 
 
 	}
 
-	if (!res.locals.session.user.globalAdmin) {
-
-		existingProductPages = existingProductPages.filter((productPage: ProductPage) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == productPage.teamId));
-
-	}
+	existingProductPages = existingProductPages.filter((productPage: ProductPage) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == productPage.teamId));
 
 	if (existingProductPages.length != req.body.productPages.length) {
 
@@ -152,7 +140,7 @@ async function postNewPage(req: Request, res: Response): Promise<Response<any>> 
 	let newPage = new Page();
 	newPage.name = req.body.name;
 	newPage.description = req.body.description;
-	newPage.team = req.body.teamId;
+	newPage.team = team;
 	newPage.reviewAttributes = existingReviewAttributes;
 	newPage.productPages = existingProductPages;
 
@@ -164,7 +152,7 @@ async function postNewPage(req: Request, res: Response): Promise<Response<any>> 
 
 async function postNewProduct(req: Request, res: Response): Promise<Response<any>> {
 
-	if (!res.locals.session.user.globalAdmin && !res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
+	if (!res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
 
@@ -200,11 +188,7 @@ async function postNewProduct(req: Request, res: Response): Promise<Response<any
 
 	}
 
-	if (!res.locals.session.user.globalAdmin) {
-
-		existingProductPages = existingProductPages.filter((productPage: ProductPage) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == productPage.teamId));
-
-	}
+	existingProductPages = existingProductPages.filter((productPage: ProductPage) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == productPage.teamId));
 
 	if (existingProductPages.length != req.body.productPages.length) {
 
@@ -217,8 +201,8 @@ async function postNewProduct(req: Request, res: Response): Promise<Response<any
 	let newProduct = new Product();
 	newProduct.name = req.body.name;
 	newProduct.description = req.body.description;
-	newProduct.team = req.body.teamId;
-	newProduct.category = req.body.categoryId;
+	newProduct.team = team;
+	newProduct.category = category;
 	newProduct.productPages = existingProductPages;
 
 	newProduct.save();
@@ -229,7 +213,7 @@ async function postNewProduct(req: Request, res: Response): Promise<Response<any
 
 async function postNewProductPage(req: Request, res: Response): Promise<Response<any>> {
 
-	if (!res.locals.session.user.globalAdmin && !res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
+	if (!res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
 
@@ -261,9 +245,9 @@ async function postNewProductPage(req: Request, res: Response): Promise<Response
 
 	let newProductPage = new ProductPage();
 	newProductPage.url = req.body.url;
-	newProductPage.team = req.body.teamId;
-	newProductPage.product = req.body.productId;
-	newProductPage.page = req.body.pageId;
+	newProductPage.team = team;
+	newProductPage.product = product;
+	newProductPage.page = page;
 
 	newProductPage.save();
 
@@ -273,7 +257,7 @@ async function postNewProductPage(req: Request, res: Response): Promise<Response
 
 async function postNewReview(req: Request, res: Response): Promise<Response<any>> {
 
-	if (!res.locals.session.user.globalAdmin && !res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
+	if (!res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
 
@@ -297,8 +281,8 @@ async function postNewReview(req: Request, res: Response): Promise<Response<any>
 
 	let newReview = new Review();
 	newReview.value = req.body.value;
-	newReview.team = req.body.teamId;
-	newReview.productPage = req.body.productPageId;
+	newReview.team = team;
+	newReview.productPage = productPage;
 
 	newReview.save();
 
@@ -308,7 +292,7 @@ async function postNewReview(req: Request, res: Response): Promise<Response<any>
 
 async function postNewReviewAttribute(req: Request, res: Response): Promise<Response<any>> {
 
-	if (!res.locals.session.user.globalAdmin && !res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
+	if (!res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
 
@@ -334,22 +318,20 @@ async function postNewReviewAttribute(req: Request, res: Response): Promise<Resp
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "Pages not found." });
 
-	} else if (!res.locals.session.user.globalAdmin) {
+	}
 
-		pages = pages.filter((page: Page) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == page.teamId));
+	pages = pages.filter((page: Page) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == page.teamId));
 
-		if (pages.length != req.body.pages.length) {
+	if (pages.length != req.body.pages.length) {
 
-			return res.status(403).json({ status: "error", statusCode: 403, message: "Pages not found." });
-
-		}
+		return res.status(403).json({ status: "error", statusCode: 403, message: "Pages not found." });
 
 	}
 
 	let newReviewAttribute = new ReviewAttribute();
 	newReviewAttribute.key = req.body.key;
 	newReviewAttribute.value = req.body.value;
-	newReviewAttribute.team = req.body.teamId;
+	newReviewAttribute.team = team;
 	newReviewAttribute.pages = pages;
 
 	newReviewAttribute.save();
@@ -405,7 +387,7 @@ async function postNewTeam(req: Request, res: Response): Promise<Response<any>> 
 
 async function postNewRol(req: Request, res: Response): Promise<Response<any>> {
 
-	if (!res.locals.session.user.globalAdmin && !res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
+	if (!res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
 
@@ -532,31 +514,14 @@ async function login(req: Request, res: Response): Promise<Response<any>> {
 
 	}
 
-	if (!comparePassword(password, dbUser.password)) {
+	if (!await comparePassword(password, dbUser.password)) {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "Password is incorrect." });
 
 	}
 
-	let isGlobalAdmin = false;
-
-	if (dbUser.teams && dbUser.roles) {
-
-		let adminTeam = dbUser.teams.find(team => team.token == process.env.ADMIN_TEAM_TOKEN);
-
-		if (adminTeam) {
-
-			isGlobalAdmin = dbUser.roles.filter(rol => rol.teamId == adminTeam.id && rol.teamAdmin == true).length != 0;
-
-		}
-
-	}
-
-	let returnedUser = new UserModel(dbUser);
-	returnedUser.setGlobalAdmin(isGlobalAdmin);
-
 	let session = encodeSession({
-		user: returnedUser,
+		user: new UserModel(dbUser),
 		id: await hashPassword(new Date().toString()),
 		dateCreated: Date.now()
 	});

@@ -60,7 +60,7 @@ async function getAllPages(req: Request, res: Response): Promise<Response<any>> 
 		where: {
 			teamId: In(res.locals.session.user.teams.map(team => team.id)),
 			isDeleted: false
-		}
+		}, relations: ['reviewAttributes']
 	});
 
 	if (req.query) {
@@ -162,7 +162,7 @@ async function getAllReviewsAttributes(req: Request, res: Response): Promise<Res
 		where: {
 			teamId: In(res.locals.session.user.teams.map(team => team.id)),
 			isDeleted: false
-		}
+		}, relations: ['pages']
 	});
 
 	if (req.query) {
@@ -217,11 +217,7 @@ async function getAllUsers(req: Request, res: Response): Promise<Response<any>> 
 
 	});
 
-	if (!res.locals.session.user.globalAdmin) {
-
-		users = users.filter(user => user.teams.some(team => res.locals.session.user.teams.some(sessionTeam => sessionTeam.id === team.id)));
-
-	}
+	users = users.filter(user => user.teams.some(team => res.locals.session.user.teams.some(sessionTeam => sessionTeam.id === team.id)));
 
 	if (req.query) {
 

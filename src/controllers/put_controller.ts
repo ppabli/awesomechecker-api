@@ -383,7 +383,38 @@ async function updateUser(req: Request, res: Response): Promise<Response<any>> {
 
 		}
 
-		user.roles = req.body.existingRoles;
+		let teams = existingRoles.filter(rol => rol.teamId);
+
+		let requester = await User.findOne({
+			where: {
+				id: res.locals.user.id
+			},
+			relations: ["roles"]
+		});
+
+		let filteredRequesterRoles = requester.roles.filter(rol => rol.canEditUser || rol.teamAdmin);
+
+		let valid = true;
+
+		for (let i = 0; i < filteredRequesterRoles.length; i++) {
+
+			if (!teams.find(team => team.teamId == filteredRequesterRoles[i].teamId)) {
+
+				valid = false;
+
+				break;
+
+			}
+
+		}
+
+		if (!valid) {
+
+			return res.status(403).json({ status: "error", statusCode: 403, message: "You can update use that roles for this user" });
+
+		}
+
+		user.roles = existingRoles;
 
 	}
 

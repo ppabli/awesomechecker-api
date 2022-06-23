@@ -1,5 +1,6 @@
 import { Page } from "../entities/page";
 import { BaseModel } from "./base.model";
+import { ReviewAttributeModel } from "./reviewAttribute.model";
 
 class PageModel extends BaseModel {
 
@@ -9,6 +10,7 @@ class PageModel extends BaseModel {
 	private reviewInsideTag: string;
 	private teamId: number;
 	private description: string;
+	private reviewAttributes: ReviewAttributeModel[];
 
 	constructor(page: Page) {
 
@@ -21,6 +23,16 @@ class PageModel extends BaseModel {
 		this.teamId = page.teamId;
 		this.description = page.description;
 
+		if (page.reviewAttributes) {
+
+			this.reviewAttributes = page.reviewAttributes.map(reviewAttribute => new ReviewAttributeModel(reviewAttribute));
+
+		}
+
+	}
+
+	public getReviewAttributes(): ReviewAttributeModel[] {
+		return this.reviewAttributes;
 	}
 
 	public getDescription(): string {

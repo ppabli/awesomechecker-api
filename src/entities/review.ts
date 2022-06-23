@@ -20,8 +20,8 @@ class Review extends Base {
 	@ManyToOne(() => ProductPage, productPage => productPage.reviews)
 	productPage: ProductPage;
 
-	@Column()
-	value: string;
+	@Column({type: "float"})
+	value: number;
 
 }
 

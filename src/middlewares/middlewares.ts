@@ -313,6 +313,11 @@ async function filterAccesibleData(req: Request, res: Response, next: NextFuncti
 		res.locals.session.user.teams = filteredTeams;
 		next();
 
+	} else if (method.toLowerCase() == "put" && objectName === "users" && req.params.id === res.locals.session.user.id) {
+
+		// Update own user data
+		next();
+
 	} else {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });

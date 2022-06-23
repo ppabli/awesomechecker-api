@@ -1,5 +1,6 @@
 import { User } from './../entities/user';
 import { BaseModel } from './base.model';
+import { RolModel } from './rol.model';
 import { SimpleTeamModel } from './team.model';
 
 class UserModel extends BaseModel {
@@ -7,7 +8,7 @@ class UserModel extends BaseModel {
 	private user: string;
 	private teams: SimpleTeamModel[];
 	private email: string;
-	private globalAdmin: boolean;
+	private roles: RolModel[];
 
 	constructor(dbUser: User) {
 
@@ -22,7 +23,11 @@ class UserModel extends BaseModel {
 
 		}
 
-		this.globalAdmin = false;
+		if (dbUser.roles) {
+
+			this.roles = dbUser.roles.map(rol => new RolModel(rol));
+
+		}
 
 	}
 
@@ -38,12 +43,8 @@ class UserModel extends BaseModel {
 		return this.teams;
 	}
 
-	public getGlobalAdmin(): boolean {
-		return this.globalAdmin;
-	}
-
-	public setGlobalAdmin(globalAdmin: boolean): void {
-		this.globalAdmin = globalAdmin;
+	public getRoles(): RolModel[] {
+		return this.roles;
 	}
 
 }

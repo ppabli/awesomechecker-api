@@ -12,7 +12,7 @@ import { Team } from "./entities/team";
 import { User } from "./entities/user";
 import { logger } from "./libs/logger";
 import { MyRouter } from "./myRouter";
-
+import * as cors from "cors";
 export class App {
 
 	private app: express.Application;
@@ -63,6 +63,7 @@ export class App {
 		};
 
 		// Global config
+		this.app.use(cors());
 		this.app.use(helmet());
 		this.app.use(express.json());
 		this.app.use(express.urlencoded({ extended: true }));

@@ -21,17 +21,7 @@ import { UserModel } from "../models/user.model";
 
 async function deleteCategory(req: Request, res: Response): Promise<Response<any>> {
 
-	let category;
-
-	if (!res.locals.session.user.globalAdmin) {
-
-		category = await Category.findOne({ where: { id: req.params.id, team: In(res.locals.session.user.teams.map(team => team.id)) } });
-
-	} else {
-
-		category = await Category.findOne(req.params.id);
-
-	}
+	let category = await Category.findOne(req.params.id);
 
 	if (!category) {
 
@@ -39,7 +29,7 @@ async function deleteCategory(req: Request, res: Response): Promise<Response<any
 
 	}
 
-	category.lastUpdate = new Date();
+	category.lastUpdateTimestamp = new Date();
 	category.isDeleted = true;
 
 	await category.save();
@@ -50,17 +40,7 @@ async function deleteCategory(req: Request, res: Response): Promise<Response<any
 
 async function deletePage(req: Request, res: Response): Promise<Response<any>> {
 
-	let page;
-
-	if (!res.locals.session.user.globalAdmin) {
-
-		page = await Page.findOne({ where: { id: req.params.id, team: In(res.locals.session.user.teams.map(team => team.id)) } });
-
-	} else {
-
-		page = await Page.findOne(req.params.id);
-
-	}
+	let page = await Page.findOne(req.params.id);
 
 	if (!page) {
 
@@ -68,7 +48,7 @@ async function deletePage(req: Request, res: Response): Promise<Response<any>> {
 
 	}
 
-	page.lastUpdate = new Date();
+	page.lastUpdateTimestamp = new Date();
 	page.isDeleted = true;
 
 	await page.save();
@@ -79,17 +59,7 @@ async function deletePage(req: Request, res: Response): Promise<Response<any>> {
 
 async function deleteProduct(req: Request, res: Response): Promise<Response<any>> {
 
-	let product;
-
-	if (!res.locals.session.user.globalAdmin) {
-
-		product = await Product.findOne({ where: { id: req.params.id, team: In(res.locals.session.user.teams.map(team => team.id)) } });
-
-	} else {
-
-		product = await Product.findOne(req.params.id);
-
-	}
+	let product = await Product.findOne(req.params.id);
 
 	if (!product) {
 
@@ -97,7 +67,7 @@ async function deleteProduct(req: Request, res: Response): Promise<Response<any>
 
 	}
 
-	product.lastUpdate = new Date();
+	product.lastUpdateTimestamp = new Date();
 	product.isDeleted = true;
 
 	await product.save();
@@ -108,17 +78,7 @@ async function deleteProduct(req: Request, res: Response): Promise<Response<any>
 
 async function deleteProductPage(req: Request, res: Response): Promise<Response<any>> {
 
-	let productPage;
-
-	if (!res.locals.session.user.globalAdmin) {
-
-		productPage = await ProductPage.findOne({ where: { id: req.params.id, team: In(res.locals.session.user.teams.map(team => team.id)) } });
-
-	} else {
-
-		productPage = await ProductPage.findOne(req.params.id);
-
-	}
+	let productPage = await ProductPage.findOne(req.params.id);
 
 	if (!productPage) {
 
@@ -126,7 +86,7 @@ async function deleteProductPage(req: Request, res: Response): Promise<Response<
 
 	}
 
-	productPage.lastUpdate = new Date();
+	productPage.lastUpdateTimestamp = new Date();
 	productPage.isDeleted = true;
 
 	await productPage.save();
@@ -138,17 +98,7 @@ async function deleteProductPage(req: Request, res: Response): Promise<Response<
 
 async function deleteReview(req: Request, res: Response): Promise<Response<any>> {
 
-	let review;
-
-	if (!res.locals.session.user.globalAdmin) {
-
-		review = await Review.findOne({ where: { id: req.params.id, team: In(res.locals.session.user.teams.map(team => team.id)) } });
-
-	} else {
-
-		review = await Review.findOne(req.params.id);
-
-	}
+	let review = await Review.findOne(req.params.id);
 
 	if (!review) {
 
@@ -156,7 +106,7 @@ async function deleteReview(req: Request, res: Response): Promise<Response<any>>
 
 	}
 
-	review.lastUpdate = new Date();
+	review.lastUpdateTimestamp = new Date();
 	review.isDeleted = true;
 
 	await review.save();
@@ -168,17 +118,7 @@ async function deleteReview(req: Request, res: Response): Promise<Response<any>>
 
 async function deleteReviewAttribute(req: Request, res: Response): Promise<Response<any>> {
 
-	let reviewAttribute;
-
-	if (!res.locals.session.user.globalAdmin) {
-
-		reviewAttribute = await ReviewAttribute.findOne({ where: { id: req.params.id, team: In(res.locals.session.user.teams.map(team => team.id)) } });
-
-	} else {
-
-		reviewAttribute = await ReviewAttribute.findOne(req.params.id);
-
-	}
+	let reviewAttribute = await ReviewAttribute.findOne(req.params.id);
 
 	if (!reviewAttribute) {
 
@@ -186,7 +126,7 @@ async function deleteReviewAttribute(req: Request, res: Response): Promise<Respo
 
 	}
 
-	reviewAttribute.lastUpdate = new Date();
+	reviewAttribute.lastUpdateTimestamp = new Date();
 	reviewAttribute.isDeleted = true;
 
 	await reviewAttribute.save();
@@ -197,17 +137,7 @@ async function deleteReviewAttribute(req: Request, res: Response): Promise<Respo
 
 async function deleteRol(req: Request, res: Response): Promise<Response<any>> {
 
-	let rol;
-
-	if (!res.locals.session.user.globalAdmin) {
-
-		rol = await Rol.findOne({ where: { id: req.params.id, team: In(res.locals.session.user.teams.map(team => team.id)) } });
-
-	} else {
-
-		rol = await Rol.findOne(req.params.id);
-
-	}
+	let rol = await Rol.findOne(req.params.id);
 
 	if (!rol) {
 
@@ -215,7 +145,7 @@ async function deleteRol(req: Request, res: Response): Promise<Response<any>> {
 
 	}
 
-	rol.lastUpdate = new Date();
+	rol.lastUpdateTimestamp = new Date();
 	rol.isDeleted = true;
 
 	await rol.save();
@@ -226,17 +156,7 @@ async function deleteRol(req: Request, res: Response): Promise<Response<any>> {
 
 async function deleteTeam(req: Request, res: Response): Promise<Response<any>> {
 
-	let team;
-
-	if (!res.locals.session.user.globalAdmin) {
-
-		team = await Team.findOne({ where: { id: req.params.id, team: In(res.locals.session.user.teams.map(team => team.id)) } });
-
-	} else {
-
-		team = await Team.findOne(req.params.id);
-
-	}
+	let team = await Team.findOne(req.params.id);
 
 	if (!team) {
 
@@ -244,7 +164,7 @@ async function deleteTeam(req: Request, res: Response): Promise<Response<any>> {
 
 	}
 
-	team.lastUpdate = new Date();
+	team.lastUpdateTimestamp = new Date();
 	team.isDeleted = true;
 
 	await team.save();
@@ -255,17 +175,7 @@ async function deleteTeam(req: Request, res: Response): Promise<Response<any>> {
 
 async function deleteUser(req: Request, res: Response): Promise<Response<any>> {
 
-	let user;
-
-	if (!res.locals.session.user.globalAdmin) {
-
-		user = await User.findOne({ where: { id: req.params.id, team: In(res.locals.session.user.teams.map(team => team.id)) } });
-
-	} else {
-
-		user = await User.findOne(req.params.id);
-
-	}
+	let user = await User.findOne(req.params.id);
 
 	if (!user) {
 
@@ -273,7 +183,7 @@ async function deleteUser(req: Request, res: Response): Promise<Response<any>> {
 
 	}
 
-	user.lastUpdate = new Date();
+	user.lastUpdateTimestamp = new Date();
 	user.isDeleted = true;
 
 	await user.save();
