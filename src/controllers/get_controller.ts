@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { json, Request, Response } from 'express';
 import { In } from 'typeorm';
 import { Category } from '../entities/category';
 import { Page } from '../entities/page';
@@ -31,7 +31,7 @@ async function getAPIInfo(req: Request, res: Response): Promise<Response<any>> {
 
 async function getHash(req: Request, res: Response): Promise<Response<any>> {
 
-	return res.status(200).json({ status: "success", statusCode: 200, message: "Hash generated", data: await hashPassword(new Date().toString())});
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Hash generated", data: await hashPassword(new Date().toString()) });
 
 }
 
@@ -49,7 +49,12 @@ async function getAllCategories(req: Request, res: Response): Promise<Response<a
 		categories = categories.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] == req.query[key];
+				if (req.query[key].toString().startsWith("[")) {
+					let array: any[] = JSON.parse(req.query[key].toString());
+					isValid = isValid && array.includes(item[key])
+				} else {
+					isValid = isValid && item[key] && item[key] == req.query[key];
+				}
 			}
 			return isValid;
 		})
@@ -74,7 +79,12 @@ async function getAllPages(req: Request, res: Response): Promise<Response<any>> 
 		pages = pages.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] == req.query[key];
+				if (req.query[key].toString().startsWith("[")) {
+					let array: any[] = JSON.parse(req.query[key].toString());
+					isValid = isValid && array.includes(item[key])
+				} else {
+					isValid = isValid && item[key] && item[key] == req.query[key];
+				}
 			}
 			return isValid;
 		})
@@ -99,7 +109,12 @@ async function getAllProducts(req: Request, res: Response): Promise<Response<any
 		products = products.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] == req.query[key];
+				if (req.query[key].toString().startsWith("[")) {
+					let array: any[] = JSON.parse(req.query[key].toString());
+					isValid = isValid && array.includes(item[key])
+				} else {
+					isValid = isValid && item[key] && item[key] == req.query[key];
+				}
 			}
 			return isValid;
 		})
@@ -125,7 +140,12 @@ async function getAllProductsPages(req: Request, res: Response): Promise<Respons
 		productPages = productPages.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] == req.query[key];
+				if (req.query[key].toString().startsWith("[")) {
+					let array: any[] = JSON.parse(req.query[key].toString());
+					isValid = isValid && array.includes(item[key])
+				} else {
+					isValid = isValid && item[key] && item[key] == req.query[key];
+				}
 			}
 			return isValid;
 		})
@@ -151,7 +171,12 @@ async function getAllReviews(req: Request, res: Response): Promise<Response<any>
 		reviews = reviews.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] == req.query[key];
+				if (req.query[key].toString().startsWith("[")) {
+					let array: any[] = JSON.parse(req.query[key].toString());
+					isValid = isValid && array.includes(item[key])
+				} else {
+					isValid = isValid && item[key] && item[key] == req.query[key];
+				}
 			}
 			return isValid;
 		})
@@ -176,7 +201,12 @@ async function getAllReviewsAttributes(req: Request, res: Response): Promise<Res
 		reviewAttributes = reviewAttributes.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] == req.query[key];
+				if (req.query[key].toString().startsWith("[")) {
+					let array: any[] = JSON.parse(req.query[key].toString());
+					isValid = isValid && array.includes(item[key])
+				} else {
+					isValid = isValid && item[key] && item[key] == req.query[key];
+				}
 			}
 			return isValid;
 		})
@@ -201,7 +231,12 @@ async function getAllTeams(req: Request, res: Response): Promise<Response<any>> 
 		teams = teams.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] == req.query[key];
+				if (req.query[key].toString().startsWith("[")) {
+					let array: any[] = JSON.parse(req.query[key].toString());
+					isValid = isValid && array.includes(item[key])
+				} else {
+					isValid = isValid && item[key] && item[key] == req.query[key];
+				}
 			}
 			return isValid;
 		})
@@ -237,7 +272,12 @@ async function getAllUsers(req: Request, res: Response): Promise<Response<any>> 
 		users = users.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] == req.query[key];
+				if (req.query[key].toString().startsWith("[")) {
+					let array: any[] = JSON.parse(req.query[key].toString());
+					isValid = isValid && array.includes(item[key])
+				} else {
+					isValid = isValid && item[key] && item[key] == req.query[key];
+				}
 			}
 			return isValid;
 		})
@@ -264,8 +304,14 @@ async function getAllRoles(req: Request, res: Response): Promise<Response<any>> 
 		roles = roles.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] == req.query[key];
+				if (req.query[key].toString().startsWith("[")) {
+					let array: any[] = JSON.parse(req.query[key].toString());
+					isValid = isValid && array.includes(item[key])
+				} else {
+					isValid = isValid && item[key] && item[key] == req.query[key];
+				}
 			}
+
 			return isValid;
 		})
 

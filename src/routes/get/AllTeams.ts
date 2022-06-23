@@ -7,7 +7,7 @@ class AllTeams extends BaseRoute {
 	constructor() {
 
 		super();
-		this.path = "/teams/:teamId";
+		this.path = "/teams";
 		this.method = getAllTeams;
 		this.requestMethod = "get";
 		this.middlewares = [jwtValidation, filterAccesibleData];

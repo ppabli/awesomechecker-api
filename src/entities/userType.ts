@@ -19,6 +19,9 @@ class UserType extends Base {
 	@Column()
 	maxRequests: number
 
+	@Column({default: false})
+	staffType: boolean
+
 	@OneToMany(() => User, user => user.userType)
 	users: User[]
 

@@ -14,9 +14,6 @@ class Rol extends Base {
 	@Column()
 	teamId: number;
 
-	@Column({default: false})
-	staffRol: boolean
-
 	@ManyToOne(() => Team, team => team.roles)
 	team: Team;
 
