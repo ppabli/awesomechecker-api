@@ -15,11 +15,6 @@ class ReviewAttribute extends Base {
 	team: Team;
 
 	@ManyToMany(() => Page, page => page.reviewAttributes)
-	@JoinTable({
-		name: "page_reviewAttribute",
-		joinColumn: { name: "reviewAttribute_id", referencedColumnName: "id" },
-		inverseJoinColumn: { name: "page_id", referencedColumnName: "id" }
-	})
 	pages: Page[];
 
 	@Column()

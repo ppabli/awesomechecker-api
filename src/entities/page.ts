@@ -30,12 +30,10 @@ class Page extends Base {
 	@Column({ nullable: true })
 	reviewInsideTag: string;
 
-	@ManyToMany(() => ReviewAttribute, reviewAttribute => reviewAttribute.pages)
-	@JoinTable({
-		name: "page_reviewAttribute",
-		joinColumn: { name: "page_id", referencedColumnName: "id" },
-		inverseJoinColumn: { name: "reviewAttribute_id", referencedColumnName: "id" }
+	@ManyToMany(() => ReviewAttribute, reviewAttribute => reviewAttribute.pages, {
+		cascade: true
 	})
+	@JoinTable()
 	reviewAttributes: ReviewAttribute[];
 
 	@OneToMany(() => ProductPage, productPage => productPage.page)

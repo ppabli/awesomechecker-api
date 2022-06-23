@@ -9,6 +9,7 @@ import { ReviewAttribute } from '../entities/reviewAttribute';
 import { Rol } from "../entities/rol";
 import { Team } from "../entities/team";
 import { User } from "../entities/user";
+import { UserType } from "../entities/userType";
 import { comparePassword, hashPassword } from "../libs/passwordFunctions";
 import { encodeSession } from "../libs/sessionsFunctions";
 import { CategoryModel } from "../models/category.model";
@@ -362,9 +363,11 @@ async function postNewUser(req: Request, res: Response): Promise<Response<any>> 
 
 	let defaultTeam = await Team.findOne({ token: process.env.DEFAULT_TEAM_TOKEN });
 	let defaultRole = await Rol.findOne({ token: process.env.DEFAULT_ROL_TOKEN });
+	let defaultUserType = await UserType.findOne({ token: process.env.DEFAULT_USERTYPE_TOKEN });
 
 	newUser.teams = [defaultTeam];
 	newUser.roles = [defaultRole];
+	newUser.userType = defaultUserType;
 
 	newUser.save();
 
@@ -418,16 +421,6 @@ async function postNewRol(req: Request, res: Response): Promise<Response<any>> {
 			let notFoundUsers = usersArray.filter(x => !dbUsers.find(y => y.id == x));
 
 			return res.status(403).json({ status: "error", statusCode: 403, message: `Users with IDs: ${notFoundUsers} not found.` });
-
-		}
-
-		for (let user of dbUsers) {
-
-			if (user.teams.filter(team => team.id == req.body.teamId)) {
-
-				filteredUsers.push(user);
-
-			}
 
 		}
 

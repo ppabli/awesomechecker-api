@@ -13,6 +13,7 @@ import { User } from "./entities/user";
 import { logger } from "./libs/logger";
 import { MyRouter } from "./myRouter";
 import * as cors from "cors";
+import { UserType } from "./entities/userType";
 export class App {
 
 	private app: express.Application;
@@ -84,7 +85,7 @@ export class App {
 				"logging": false,
 				"synchronize": true,
 				"entities": [
-					Review, ProductPage, Product, Category, Page, ReviewAttribute, User, Team, Rol
+					Review, ProductPage, Product, Category, Page, ReviewAttribute, User, Team, Rol, UserType
 				],
 				
 			}

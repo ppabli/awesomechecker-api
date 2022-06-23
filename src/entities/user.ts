@@ -1,7 +1,8 @@
-import { Entity, Column, ManyToMany, OneToMany, JoinTable } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from "typeorm";
 import { Base } from "./base";
-import { Team } from "./team";
 import { Rol } from "./rol";
+import { Team } from "./team";
+import { UserType } from "./userType";
 @Entity("users", { schema: Base.schemaName })
 class User extends Base {
 
@@ -19,20 +20,19 @@ class User extends Base {
 	@Column({ nullable: true })
 	tempPassword: string;
 
+	@Column({ nullable: true })
+	userTypeId: number;
+
+	@ManyToOne(() => UserType, userType => userType.users)
+	userType: UserType
+
 	@ManyToMany(() => Team, team => team.users)
-	@JoinTable({
-		name: "user_team",
-		joinColumn: { name: "user_id", referencedColumnName: "id" },
-		inverseJoinColumn: { name: "team_id", referencedColumnName: "id" }
-	})
 	teams: Team[];
 
-	@ManyToMany(() => Rol, rol => rol.users)
-	@JoinTable({
-		name: "user_rol",
-		joinColumn: { name: "user_id", referencedColumnName: "id" },
-		inverseJoinColumn: { name: "rol_id", referencedColumnName: "id" }
+	@ManyToMany(() => Rol, rol => rol.users, {
+		cascade: true
 	})
+	@JoinTable()
 	roles: Rol[];
 
 }

@@ -41,12 +41,10 @@ class Team extends Base {
 	@Column()
 	description: string;
 
-	@ManyToMany(() => User, user => user.teams)
-	@JoinTable({
-		name: "user_team",
-		joinColumn: { name: "team_id", referencedColumnName: "id" },
-		inverseJoinColumn: { name: "user_id", referencedColumnName: "id" }
+	@ManyToMany(() => User, user => user.teams, {
+		cascade: true
 	})
+	@JoinTable()
 	users: User[];
 
 	@OneToMany(() => Rol, rol => rol.team)

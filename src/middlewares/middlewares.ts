@@ -182,125 +182,51 @@ async function filterAccesibleData(req: Request, res: Response, next: NextFuncti
 
 	let filteredTeams: TeamModel[] = [];
 
-	if (dbUser.teams && dbUser.roles) {
+	for (let team of dbUser.teams) {
 
-		let adminTeam = dbUser.teams.find(team => team.token === process.env.ADMIN_TEAM_TOKEN);
-		let rolData;
+		let rolData
+		let filteredRoles = dbUser.roles.filter(role => role.teamId === team.id);
 
-		if (adminTeam) {
+		for (let role of filteredRoles) {
 
-			let adminTeamUserRoles = dbUser.roles.filter(rol => rol.teamId === adminTeam.id);
-			let isAllowed = false;
+			let parsedRol = new RolModel(role);
 
-			if (adminTeamUserRoles.length) {
+			switch (method.toLowerCase()) {
 
-				for (let role of adminTeamUserRoles) {
+				case "get":
 
-					let parsedRol = new RolModel(role);
+					rolData = parsedRol.getGetPermissions();
 
-					switch (method.toLowerCase()) {
+					break;
 
-						case "get":
+				case "post":
 
-							rolData = parsedRol.getGetPermissions();
+					rolData = parsedRol.getPostPermissions();
 
-							break;
+					break;
 
-						case "post":
+				case "put":
 
-							rolData = parsedRol.getPostPermissions();
+					rolData = parsedRol.getPutPermissions();
 
-							break;
+					break;
 
-						case "put":
+				case "delete":
 
-							rolData = parsedRol.getPutPermissions();
+					rolData = parsedRol.getDeletePermissions();
 
-							break;
+					break;
 
-						case "delete":
+				default:
 
-							rolData = parsedRol.getDeletePermissions();
-
-							break;
-
-						default:
-
-							break;
-
-					}
-
-					if (rolData[objectName] || parsedRol.getTeamAdmin()) {
-
-						isAllowed = true;
-						break;
-
-					}
-
-				}
+					break;
 
 			}
 
-			if (!isAllowed) {
+			if (rolData[objectName] || parsedRol.getTeamAdmin()) {
 
-				return res.status(403).json({ status: "error", statusCode: 403, message: "You are not allowed to access this resource." });
-
-			}
-
-			let allTeams = await Team.find();
-
-			filteredTeams = allTeams.map(team => new TeamModel(team));
-
-		} else {
-
-			for (let team of dbUser.teams) {
-
-				let filteredRoles = dbUser.roles.filter(role => role.teamId === team.id);
-
-				for (let role of filteredRoles) {
-
-					let parsedRol = new RolModel(role);
-
-					switch (method.toLowerCase()) {
-
-						case "get":
-
-							rolData = parsedRol.getGetPermissions();
-
-							break;
-
-						case "post":
-
-							rolData = parsedRol.getPostPermissions();
-
-							break;
-
-						case "put":
-
-							rolData = parsedRol.getPutPermissions();
-
-							break;
-
-						case "delete":
-
-							rolData = parsedRol.getDeletePermissions();
-
-							break;
-
-						default:
-
-							break;
-
-					}
-
-					if (rolData[objectName] || parsedRol.getTeamAdmin()) {
-
-						filteredTeams.push(new TeamModel(team));
-						break;
-
-					}
-
-				}
+				filteredTeams.push(new TeamModel(team));
+				break;
 
 			}
 

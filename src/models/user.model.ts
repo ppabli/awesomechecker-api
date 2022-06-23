@@ -1,7 +1,9 @@
+import { UserType } from '../entities/userType';
 import { User } from './../entities/user';
 import { BaseModel } from './base.model';
 import { RolModel } from './rol.model';
 import { SimpleTeamModel } from './team.model';
+import { UserTypeModel } from './userType.model';
 
 class UserModel extends BaseModel {
 
@@ -9,6 +11,7 @@ class UserModel extends BaseModel {
 	private teams: SimpleTeamModel[];
 	private email: string;
 	private roles: RolModel[];
+	private userType: UserTypeModel;
 
 	constructor(dbUser: User) {
 
@@ -29,6 +32,12 @@ class UserModel extends BaseModel {
 
 		}
 
+		if (dbUser.userType) {
+
+			this.userType = new UserTypeModel(dbUser.userType);
+
+		}
+
 	}
 
 	public getUser(): string {
@@ -45,6 +54,10 @@ class UserModel extends BaseModel {
 
 	public getRoles(): RolModel[] {
 		return this.roles;
+	}
+
+	public getUserType(): UserTypeModel {
+		return this.userType;
 	}
 
 }

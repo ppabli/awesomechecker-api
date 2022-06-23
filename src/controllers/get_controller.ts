@@ -9,6 +9,7 @@ import { ReviewAttribute } from '../entities/reviewAttribute';
 import { Rol } from '../entities/rol';
 import { Team } from '../entities/team';
 import { User } from '../entities/user';
+import { hashPassword } from '../libs/passwordFunctions';
 import { CategoryModel } from '../models/category.model';
 import { Info } from '../models/info.model';
 import { PageModel } from '../models/page.model';
@@ -28,6 +29,12 @@ async function getAPIInfo(req: Request, res: Response): Promise<Response<any>> {
 
 }
 
+async function getHash(req: Request, res: Response): Promise<Response<any>> {
+
+	return res.status(200).json({ status: "success", statusCode: 200, message: "Hash generated", data: await hashPassword(new Date().toString())});
+
+}
+
 async function getAllCategories(req: Request, res: Response): Promise<Response<any>> {
 
 	let categories = await Category.find({
@@ -37,13 +44,12 @@ async function getAllCategories(req: Request, res: Response): Promise<Response<a
 		}
 	});
 
-
 	if (req.query) {
 
 		categories = categories.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] === req.query[key];
+				isValid = isValid && item[key] && item[key] == req.query[key];
 			}
 			return isValid;
 		})
@@ -68,7 +74,7 @@ async function getAllPages(req: Request, res: Response): Promise<Response<any>> 
 		pages = pages.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] === req.query[key];
+				isValid = isValid && item[key] && item[key] == req.query[key];
 			}
 			return isValid;
 		})
@@ -93,7 +99,7 @@ async function getAllProducts(req: Request, res: Response): Promise<Response<any
 		products = products.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] === req.query[key];
+				isValid = isValid && item[key] && item[key] == req.query[key];
 			}
 			return isValid;
 		})
@@ -119,7 +125,7 @@ async function getAllProductsPages(req: Request, res: Response): Promise<Respons
 		productPages = productPages.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] === req.query[key];
+				isValid = isValid && item[key] && item[key] == req.query[key];
 			}
 			return isValid;
 		})
@@ -145,7 +151,7 @@ async function getAllReviews(req: Request, res: Response): Promise<Response<any>
 		reviews = reviews.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] === req.query[key];
+				isValid = isValid && item[key] && item[key] == req.query[key];
 			}
 			return isValid;
 		})
@@ -170,7 +176,7 @@ async function getAllReviewsAttributes(req: Request, res: Response): Promise<Res
 		reviewAttributes = reviewAttributes.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] === req.query[key];
+				isValid = isValid && item[key] && item[key] == req.query[key];
 			}
 			return isValid;
 		})
@@ -195,7 +201,7 @@ async function getAllTeams(req: Request, res: Response): Promise<Response<any>> 
 		teams = teams.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] === req.query[key];
+				isValid = isValid && item[key] && item[key] == req.query[key];
 			}
 			return isValid;
 		})
@@ -217,13 +223,13 @@ async function getAllUsers(req: Request, res: Response): Promise<Response<any>> 
 
 	});
 
-	users = users.filter(user => user.teams.some(team => res.locals.session.user.teams.some(sessionTeam => sessionTeam.id === team.id)));
+	users = users.filter(user => user.teams.some(team => res.locals.session.user.teams.some(sessionTeam => sessionTeam.id == team.id)));
 
 	if (req.query) {
 
 		if (req.query.teamId) {
 
-			users = users.filter(user => user.teams.some(team => team.id === Number(req.query.teamId)));
+			users = users.filter(user => user.teams.some(team => team.id == Number(req.query.teamId)));
 			delete req.query.teamId;
 
 		}
@@ -231,7 +237,7 @@ async function getAllUsers(req: Request, res: Response): Promise<Response<any>> 
 		users = users.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] === req.query[key];
+				isValid = isValid && item[key] && item[key] == req.query[key];
 			}
 			return isValid;
 		})
@@ -258,7 +264,7 @@ async function getAllRoles(req: Request, res: Response): Promise<Response<any>> 
 		roles = roles.filter(item => {
 			let isValid = true;
 			for (let key in req.query) {
-				isValid = isValid && item[key] && item[key] === req.query[key];
+				isValid = isValid && item[key] && item[key] == req.query[key];
 			}
 			return isValid;
 		})
@@ -269,5 +275,5 @@ async function getAllRoles(req: Request, res: Response): Promise<Response<any>> 
 
 }
 
-export { getAPIInfo, getAllCategories, getAllPages, getAllProducts, getAllProductsPages, getAllReviews, getAllReviewsAttributes, getAllTeams, getAllUsers, getAllRoles };
+export { getAPIInfo, getAllCategories, getAllPages, getAllProducts, getAllProductsPages, getAllReviews, getAllReviewsAttributes, getAllTeams, getAllUsers, getAllRoles, getHash };
 

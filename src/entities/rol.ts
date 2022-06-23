@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
 import { Base } from "./base";
 import { Team } from './team';
 import { User } from './user';
@@ -9,15 +9,13 @@ class Rol extends Base {
 	public static necessaryPostParams: Record<string, any> = { "teamId": Number, "name": String, "description": String};
 
 	@ManyToMany(() => User, user => user.roles)
-	@JoinTable({
-		name: "user_rol",
-		joinColumn: { name: "rol_id", referencedColumnName: "id" },
-		inverseJoinColumn: { name: "user_id", referencedColumnName: "id" }
-	})
 	users: User[];
 
 	@Column()
 	teamId: number;
+
+	@Column({default: false})
+	staffRol: boolean
 
 	@ManyToOne(() => Team, team => team.roles)
 	team: Team;
@@ -142,3 +140,4 @@ class Rol extends Base {
 }
 
 export { Rol };
+

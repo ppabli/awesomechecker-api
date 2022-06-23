@@ -19,6 +19,7 @@ import { AllReviewsAttributes } from './routes/get/allReviewsAttributes';
 import { AllRoles } from './routes/get/AllRoles';
 import { AllTeams } from './routes/get/AllTeams';
 import { AllUsers } from './routes/get/AllUsers';
+import { Hash } from './routes/get/hash';
 import { Info } from "./routes/get/info";
 import { Login } from './routes/post/login';
 import { NewCategory } from './routes/post/newCategory';
@@ -59,6 +60,7 @@ class MyRouter {
 		new AllUsers(),
 		new AllTeams(),
 		new AllRoles(),
+		new Hash(),
 
 		// ! Post routes!
 		new NewCategory(),

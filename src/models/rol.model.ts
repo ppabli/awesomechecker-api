@@ -7,6 +7,7 @@ class RolModel extends BaseModel {
 	private description: string;
 	private token: string;
 	private teamId: number;
+	private staffRol: boolean;
 	// Permissions
 	private teamAdmin: boolean;
 	private canGetUsers: boolean;
@@ -54,6 +55,7 @@ class RolModel extends BaseModel {
 		this.description = rol.description;
 		this.token = rol.token;
 		this.teamId = rol.teamId;
+		this.staffRol = rol.staffRol;
 
 		this.teamAdmin = rol.teamAdmin;
 		this.canGetUsers = rol.canGetUsers;
@@ -177,6 +179,10 @@ class RolModel extends BaseModel {
 
 	public getTeamId(): number {
 		return this.teamId;
+	}
+
+	public getStaffRol(): boolean {
+		return this.staffRol;
 	}
 
 	public getTeamAdmin(): boolean {

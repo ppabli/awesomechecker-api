@@ -137,7 +137,11 @@ async function deleteReviewAttribute(req: Request, res: Response): Promise<Respo
 
 async function deleteRol(req: Request, res: Response): Promise<Response<any>> {
 
-	let rol = await Rol.findOne(req.params.id);
+	let rol = await Rol.findOne(req.params.id, {
+		where: {
+			staffRol: false
+		}
+	});
 
 	if (!rol) {
 

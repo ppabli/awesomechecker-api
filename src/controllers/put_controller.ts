@@ -9,6 +9,7 @@ import { ReviewAttribute } from "../entities/reviewAttribute";
 import { Rol } from "../entities/rol";
 import { Team } from "../entities/team";
 import { User } from "../entities/user";
+import { UserType } from "../entities/userType";
 import { hashPassword } from "../libs/passwordFunctions";
 import { CategoryModel } from "../models/category.model";
 import { PageModel } from "../models/page.model";
@@ -64,7 +65,7 @@ async function updatePage(req: Request, res: Response): Promise<Response<any>> {
 
 			let missingReviewAttributes = req.body.products.filter(x => !existingReviewAttributes.find(y => y.id == x));
 
-			return res.status(400).json({ status: "error", statusCode: 400, message: "Products not found.", "data": missingReviewAttributes });
+			return res.status(400).json({ status: "error", statusCode: 400, message: "Products not found.", data: missingReviewAttributes });
 
 		}
 
@@ -244,7 +245,7 @@ async function updateReviewAttribute(req: Request, res: Response): Promise<Respo
 
 			let missingPages = req.body.pages.filter(x => !existingPages.find(y => y.id == x));
 
-			return res.status(400).json({ status: "error", statusCode: 400, message: "Products not found.", "data": missingPages });
+			return res.status(400).json({ status: "error", statusCode: 400, message: "Products not found.", data: missingPages });
 
 		}
 
@@ -369,7 +370,7 @@ async function updateUser(req: Request, res: Response): Promise<Response<any>> {
 
 			let missingRoles = req.body.roles.filter(x => !existingRoles.find(y => y.id == x));
 
-			return res.status(400).json({ status: "error", statusCode: 400, message: "Roles not found.", "data": missingRoles });
+			return res.status(400).json({ status: "error", statusCode: 400, message: "Roles not found.", data: missingRoles });
 
 		}
 
@@ -379,7 +380,7 @@ async function updateUser(req: Request, res: Response): Promise<Response<any>> {
 
 			let missingRoles = req.body.roles.filter(x => !existingRoles.find(y => y.id == x));
 
-			return res.status(400).json({ status: "error", statusCode: 400, message: "Roles not found.", "data": missingRoles });
+			return res.status(400).json({ status: "error", statusCode: 400, message: "Roles not found.", data: missingRoles });
 
 		}
 
@@ -418,6 +419,14 @@ async function updateUser(req: Request, res: Response): Promise<Response<any>> {
 
 	}
 
+	if (req.body.userTypeId) {
+		let userType = await UserType.findOne(req.body.userTypeId);
+		if (!userType) {
+			return res.status(400).json({ status: "error", statusCode: 400, message: "User tpye not found." });
+		}
+		user.userType = userType
+	}
+
 	user.user = req.body.user || user.user;
 	user.email = req.body.email || user.email;
 	user.password = await hashPassword(req.body.password) || user.password;
@@ -430,4 +439,4 @@ async function updateUser(req: Request, res: Response): Promise<Response<any>> {
 
 }
 
-export {updateCategory, updatePage, updateProduct, updateProductPage, updateReview, updateReviewAttribute, updateRol, updateTeam, updateUser};
+export { updateCategory, updatePage, updateProduct, updateProductPage, updateReview, updateReviewAttribute, updateRol, updateTeam, updateUser };
