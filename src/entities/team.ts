@@ -17,6 +17,9 @@ class Team extends Base {
 	@OneToMany(() => Product, product => product.team)
 	products: Product[];
 
+	@Column('text', {array: true})
+	images: string[]
+
 	@OneToMany(() => Page, page => page.team)
 	pages: Page[];
 

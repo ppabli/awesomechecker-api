@@ -9,8 +9,8 @@ class UpdateUser extends BaseRoute {
 		super();
 		this.path = "/users/:id";
 		this.method = updateUser;
-		this.requestMethod = "patch";
-		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
+		this.requestMethod = "put";
+		this.middlewares = [jwtValidation, globalThis.upload.array("images"), checkNecessaryParams, filterAccesibleData];
 
 	}
 

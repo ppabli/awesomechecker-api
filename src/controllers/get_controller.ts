@@ -1,4 +1,4 @@
-import { json, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { In } from 'typeorm';
 import { Category } from '../entities/category';
 import { Page } from '../entities/page';
@@ -131,8 +131,7 @@ async function getAllProductsPages(req: Request, res: Response): Promise<Respons
 		where: {
 			teamId: In(res.locals.session.user.teams.map(team => team.id)),
 			isDeleted: false
-		},
-		relations: ['product', 'page']
+		}
 	});
 
 	if (req.query) {
@@ -162,8 +161,7 @@ async function getAllReviews(req: Request, res: Response): Promise<Response<any>
 		where: {
 			teamId: In(res.locals.session.user.teams.map(team => team.id)),
 			isDeleted: false
-		},
-		relations: ['product']
+		}
 	});
 
 	if (req.query) {
@@ -193,7 +191,7 @@ async function getAllReviewsAttributes(req: Request, res: Response): Promise<Res
 		where: {
 			teamId: In(res.locals.session.user.teams.map(team => team.id)),
 			isDeleted: false
-		}, relations: ['pages']
+		}
 	});
 
 	if (req.query) {
@@ -250,12 +248,9 @@ async function getAllTeams(req: Request, res: Response): Promise<Response<any>> 
 async function getAllUsers(req: Request, res: Response): Promise<Response<any>> {
 
 	let users = await User.find({
-
 		where: {
 			isDeleted: false
-		},
-		relations: ['teams']
-
+		}
 	});
 
 	users = users.filter(user => user.teams.some(team => res.locals.session.user.teams.some(sessionTeam => sessionTeam.id == team.id)));
@@ -294,9 +289,7 @@ async function getAllRoles(req: Request, res: Response): Promise<Response<any>> 
 		where: {
 			teamId: In(res.locals.session.user.teams.map(team => team.id)),
 			isDeleted: false
-		},
-		relations: ['teams']
-
+		}
 	});
 
 	if (req.query) {

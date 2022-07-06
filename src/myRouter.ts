@@ -147,8 +147,8 @@ class MyRouter {
 					this.router.post(route.getPath(), route.getMiddlewares(), route.getMethod());
 					break;
 
-				case "patch":
-					this.router.patch(route.getPath(), route.getMiddlewares(), route.getMethod());
+				case "put":
+					this.router.put(route.getPath(), route.getMiddlewares(), route.getMethod());
 					break;
 
 				case "delete":

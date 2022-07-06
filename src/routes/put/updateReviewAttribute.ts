@@ -9,7 +9,7 @@ class UpdateReviewAttribute extends BaseRoute {
 		super();
 		this.path = "/reviewAttributes/:id";
 		this.method = updateReviewAttribute;
-		this.requestMethod = "patch";
+		this.requestMethod = "put";
 		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
 
 	}

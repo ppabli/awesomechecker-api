@@ -21,8 +21,24 @@ import { ReviewAttributeModel } from "../models/reviewAttribute.model";
 import { RolModel } from "../models/rol.model";
 import { TeamModel } from "../models/team.model";
 import { UserModel } from "../models/user.model";
+import { v5 as uuidv5 } from 'uuid';
+import { createReadStream } from 'fs'
+import { emptyPath } from "../libs/systemFunctions";
 
 async function postNewCategory(req: Request, res: Response): Promise<Response<any>> {
+
+	let dbCategory = await Category.findOne({
+		where: {
+			name: req.body.name,
+			teamId: req.body.teamId
+		}
+	})
+
+	if (dbCategory) {
+
+		return res.status(403).json({ status: "error", statusCode: 403, message: "The resource already exists." });
+
+	}
 
 	if (!res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
 
@@ -75,6 +91,19 @@ async function postNewCategory(req: Request, res: Response): Promise<Response<an
 }
 
 async function postNewPage(req: Request, res: Response): Promise<Response<any>> {
+
+	let dbPage = await Page.findOne({
+		where: {
+			name: req.body.name,
+			teamId: req.body.teamId
+		}
+	})
+
+	if (dbPage) {
+
+		return res.status(403).json({ status: "error", statusCode: 403, message: "The resource already exists." });
+
+	}
 
 	if (!res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
 
@@ -151,7 +180,20 @@ async function postNewPage(req: Request, res: Response): Promise<Response<any>> 
 
 }
 
-async function postNewProduct(req: Request, res: Response): Promise<Response<any>> {
+async function postNewProduct(req: any, res: Response): Promise<Response<any>> {
+
+	let dbProduct = await Product.findOne({
+		where: {
+			name: req.body.name,
+			teamId: req.body.teamId
+		}
+	})
+
+	if (dbProduct) {
+
+		return res.status(403).json({ status: "error", statusCode: 403, message: "The resource already exists." });
+
+	}
 
 	if (!res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
 
@@ -175,27 +217,59 @@ async function postNewProduct(req: Request, res: Response): Promise<Response<any
 
 	}
 
-	let existingProductPages = await ProductPage.find({
-		where: {
-			id: In(req.body.productPages)
+	let existingProductPages = []
+
+	if (req.body.productPages) {
+
+		existingProductPages = await ProductPage.find({
+			where: {
+				id: In(req.body.productPages)
+			}
+		});
+
+		if (existingProductPages.length != req.body.productPages.length) {
+
+			let missingProductPages = req.body.productPages.filter(x => !existingProductPages.find(y => y.id == x));
+
+			return res.status(400).json({ status: "error", statusCode: 400, message: "Product pages not found.", missingProductPages });
+
 		}
-	});
 
-	if (existingProductPages.length != req.body.productPages.length) {
+		existingProductPages = existingProductPages.filter((productPage: ProductPage) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == productPage.teamId));
 
-		let missingProductPages = req.body.productPages.filter(x => !existingProductPages.find(y => y.id == x));
+		if (existingProductPages.length != req.body.productPages.length) {
 
-		return res.status(400).json({ status: "error", statusCode: 400, message: "Product pages not found.", missingProductPages });
+			let missingProductPages = req.body.productPages.filter(x => !existingProductPages.find(y => y.id == x));
+
+			return res.status(400).json({ status: "error", statusCode: 400, message: `This product pages do not belong to your team: ${missingProductPages}` });
+
+		}
 
 	}
 
-	existingProductPages = existingProductPages.filter((productPage: ProductPage) => res.locals.session.user.teams.find((team: TeamModel) => team.getId() == productPage.teamId));
+	let images = [process.env.DEFAULT_IMAGE_ID];
 
-	if (existingProductPages.length != req.body.productPages.length) {
+	if (req.files.length) {
 
-		let missingProductPages = req.body.productPages.filter(x => !existingProductPages.find(y => y.id == x));
+		images = [];
 
-		return res.status(400).json({ status: "error", statusCode: 400, message: `This product pages do not belong to your team: ${missingProductPages}` });
+		for (let file of req.files) {
+
+			let imageId = uuidv5(file.originalname, process.env.NAMESPACE);
+
+			images.push(imageId);
+
+			globalThis.S3.putObject({
+				Bucket: process.env.BUCKET_NAME,
+				Key: imageId,
+				ContentType: file.mimetype,
+				ContentLength: file.size,
+				Body: await createReadStream(file.path)
+			}, () => { });
+
+		}
+
+		emptyPath(process.env.IMAGE_PATH);
 
 	}
 
@@ -205,6 +279,7 @@ async function postNewProduct(req: Request, res: Response): Promise<Response<any
 	newProduct.team = team;
 	newProduct.category = category;
 	newProduct.productPages = existingProductPages;
+	newProduct.images = images;
 
 	newProduct.save();
 
@@ -293,6 +368,20 @@ async function postNewReview(req: Request, res: Response): Promise<Response<any>
 
 async function postNewReviewAttribute(req: Request, res: Response): Promise<Response<any>> {
 
+	let dbReviewAttribute = await ReviewAttribute.findOne({
+		where: {
+			key: req.body.key,
+			value: req.body.value,
+			teamId: req.body.teamId
+		}
+	})
+
+	if (dbReviewAttribute) {
+
+		return res.status(403).json({ status: "error", statusCode: 403, message: "The resource already exists." });
+
+	}
+
 	if (!res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action." });
@@ -341,18 +430,44 @@ async function postNewReviewAttribute(req: Request, res: Response): Promise<Resp
 
 }
 
-async function postNewUser(req: Request, res: Response): Promise<Response<any>> {
+async function postNewUser(req: any, res: Response): Promise<Response<any>> {
 
-	let existingUser = await User.find({
+	let existingUser = await User.findOne({
 		where: {
 			email: req.body.email,
 			user: req.body.user
 		}
 	});
 
-	if (existingUser.length) {
+	if (existingUser) {
 
 		return res.status(400).json({ status: "error", statusCode: 400, message: "User already exists." });
+
+	}
+
+	let images = [process.env.DEFAULT_IMAGE_ID];
+
+	if (req.files.length) {
+
+		images = [];
+
+		for (let file of req.files) {
+
+			let imageId = uuidv5(file.originalname, process.env.NAMESPACE);
+
+			images.push(imageId);
+
+			globalThis.S3.putObject({
+				Bucket: process.env.BUCKET_NAME,
+				Key: imageId,
+				ContentType: file.mimetype,
+				ContentLength: file.size,
+				Body: await createReadStream(file.path)
+			}, () => { });
+
+		}
+
+		emptyPath(process.env.IMAGE_PATH);
 
 	}
 
@@ -360,6 +475,7 @@ async function postNewUser(req: Request, res: Response): Promise<Response<any>> 
 	newUser.user = req.body.user;
 	newUser.email = req.body.email;
 	newUser.password = await hashPassword(req.body.password);
+	newUser.images = images;
 
 	let defaultTeam = await Team.findOne({ token: process.env.DEFAULT_TEAM_TOKEN });
 	let defaultRole = await Rol.findOne({ token: process.env.DEFAULT_ROL_TOKEN });
@@ -375,12 +491,51 @@ async function postNewUser(req: Request, res: Response): Promise<Response<any>> 
 
 }
 
-async function postNewTeam(req: Request, res: Response): Promise<Response<any>> {
+async function postNewTeam(req: any, res: Response): Promise<Response<any>> {
+
+	let dbTeam = await Team.findOne({
+		where: {
+			name: req.body.name
+		}
+	})
+
+	if (dbTeam) {
+
+		return res.status(403).json({ status: "error", statusCode: 403, message: "The resource already exists." });
+
+	}
+
+	let images = [process.env.DEFAULT_IMAGE_ID];
+
+	if (req.files.length) {
+
+		images = [];
+
+		for (let file of req.files) {
+
+			let imageId = uuidv5(file.originalname, process.env.NAMESPACE);
+
+			images.push(imageId);
+
+			globalThis.S3.putObject({
+				Bucket: process.env.BUCKET_NAME,
+				Key: imageId,
+				ContentType: file.mimetype,
+				ContentLength: file.size,
+				Body: await createReadStream(file.path)
+			}, () => { });
+
+		}
+
+		emptyPath(process.env.IMAGE_PATH);
+
+	}
 
 	let newTeam = new Team();
 	newTeam.name = req.body.name;
 	newTeam.description = req.body.description;
 	newTeam.token = await hashPassword(new Date().toString());
+	newTeam.images = images;
 
 	newTeam.save();
 
@@ -389,6 +544,18 @@ async function postNewTeam(req: Request, res: Response): Promise<Response<any>> 
 }
 
 async function postNewRol(req: Request, res: Response): Promise<Response<any>> {
+
+	let dbRol = await Rol.findOne({
+		where: {
+			name: req.body.name
+		}
+	})
+
+	if (dbRol) {
+
+		return res.status(403).json({ status: "error", statusCode: 403, message: "The resource already exists." });
+
+	}
 
 	if (!res.locals.session.user.teams.find((team: TeamModel) => team.getId() == req.body.teamId)) {
 
@@ -400,7 +567,7 @@ async function postNewRol(req: Request, res: Response): Promise<Response<any>> {
 
 	if (!dbTeam) {
 
-		return res.status(403).json({ status: "error", statusCode: 403, message: "Team not found." });
+		return res.status(403).json({ status: "error", statusCode: 403, message: "The resource already exists." });
 
 	}
 

@@ -7,10 +7,13 @@ import { Team } from "./team";
 @Entity("products", { schema: Base.schemaName })
 class Product extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "category": Number, "name": String };
+	public static necessaryPostParams: Record<string, any> = { "categoryId": Number, "teamId": Number, "name": String };
 
 	@Column()
 	teamId: number;
+
+	@Column('text', {array: true})
+	images: string[]
 
 	@ManyToOne(() => Team, team => team.products)
 	team: Team;

@@ -9,7 +9,7 @@ class UpdateCategory extends BaseRoute {
 		super();
 		this.path = "/categories/:id";
 		this.method = updateCategory;
-		this.requestMethod = "patch";
+		this.requestMethod = "put";
 		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
 
 	}

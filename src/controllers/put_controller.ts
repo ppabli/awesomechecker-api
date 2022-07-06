@@ -20,14 +20,22 @@ import { ReviewAttributeModel } from "../models/reviewAttribute.model";
 import { RolModel } from "../models/rol.model";
 import { TeamModel } from "../models/team.model";
 import { UserModel } from "../models/user.model";
+import { v5 as uuidv5 } from 'uuid';
+import { createReadStream } from "fs";
+import { emptyPath } from "../libs/systemFunctions";
 
 async function updateCategory(req: Request, res: Response): Promise<Response<any>> {
 
-	let category = await Category.findOne(req.params.id);
+	let category = await Category.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!category) {
 
-		return res.status(404).json({ status: "error", statusCode: 404, message: "Category not found." });
+		return res.status(404).json({ status: "error", statusCode: 404, message: "Category not found or you are not allowed to perform this action." });
 
 	}
 
@@ -44,11 +52,16 @@ async function updateCategory(req: Request, res: Response): Promise<Response<any
 
 async function updatePage(req: Request, res: Response): Promise<Response<any>> {
 
-	let page = await Page.findOne(req.params.id);
+	let page = await Page.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!page) {
 
-		return res.status(404).json({ status: "error", statusCode: 404, message: "Page not found." });
+		return res.status(404).json({ status: "error", statusCode: 404, message: "Page not found or you are not allowed to perform this action." });
 
 	}
 
@@ -85,13 +98,18 @@ async function updatePage(req: Request, res: Response): Promise<Response<any>> {
 
 }
 
-async function updateProduct(req: Request, res: Response): Promise<Response<any>> {
+async function updateProduct(req: any, res: Response): Promise<Response<any>> {
 
-	let product = await Product.findOne(req.params.id);
+	let product = await Product.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!product) {
 
-		return res.status(404).json({ status: "error", statusCode: 404, message: "Product not found." });
+		return res.status(404).json({ status: "error", statusCode: 404, message: "Product not found or you are not allowed to perform this action." });
 
 	}
 
@@ -106,11 +124,60 @@ async function updateProduct(req: Request, res: Response): Promise<Response<any>
 
 		if (!existingCategory) {
 
-			return res.status(404).json({ status: "error", statusCode: 404, message: "Category not found." });
+			return res.status(404).json({ status: "error", statusCode: 404, message: "Category not found or you are not allowed to perform this action." });
 
 		}
 
 		product.category = req.body.categoryId;
+
+	}
+
+	if (req.files.length) {
+
+		let requestImages = req.files.map(file => uuidv5(file.originalname, process.env.NAMESPACE))
+
+		let deletedImages = product.images.filter(imgCode => !requestImages.includes(imgCode));
+
+		for (let image of deletedImages.filter(img => img != process.env.DEFAULT_IMAGE_ID)) {
+
+			globalThis.S3.putObjectTagging({
+
+				Bucket: process.env.BUCKET_NAME,
+				Key: image,
+				Tagging: {
+					TagSet: [
+						{
+							Key: 'deleted',
+							Value: '1'
+						}
+					]
+				}
+
+			}, () => { })
+
+		}
+
+		for (let file of req.files) {
+
+			let imageId = uuidv5(file.originalname, process.env.NAMESPACE);
+
+			if (product.images.includes(imageId)) {
+				continue;
+			}
+
+			globalThis.S3.putObject({
+				Bucket: process.env.BUCKET_NAME,
+				Key: imageId,
+				ContentType: file.mimetype,
+				ContentLength: file.size,
+				Body: await createReadStream(file.path)
+			}, () => { });
+
+		}
+
+		product.images = requestImages;
+
+		emptyPath(process.env.IMAGE_PATH)
 
 	}
 
@@ -127,11 +194,16 @@ async function updateProduct(req: Request, res: Response): Promise<Response<any>
 
 async function updateProductPage(req: Request, res: Response): Promise<Response<any>> {
 
-	let productPage = await ProductPage.findOne(req.params.id);
+	let productPage = await ProductPage.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!productPage) {
 
-		return res.status(404).json({ status: "error", statusCode: 404, message: "Product page not found." });
+		return res.status(404).json({ status: "error", statusCode: 404, message: "Product page not found or you are not allowed to perform this action." });
 
 	}
 
@@ -185,11 +257,16 @@ async function updateProductPage(req: Request, res: Response): Promise<Response<
 
 async function updateReview(req: Request, res: Response): Promise<Response<any>> {
 
-	let review = await Review.findOne(req.params.id);
+	let review = await Review.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!review) {
 
-		return res.status(404).json({ status: "error", statusCode: 404, message: "Review not found." });
+		return res.status(404).json({ status: "error", statusCode: 404, message: "Review not found or you are not allowed to perform this action." });
 
 	}
 
@@ -204,7 +281,7 @@ async function updateReview(req: Request, res: Response): Promise<Response<any>>
 
 		if (!existingProductPage) {
 
-			return res.status(404).json({ status: "error", statusCode: 404, message: "Product page not found." });
+			return res.status(404).json({ status: "error", statusCode: 404, message: "Product page not found or you are not allowed to perform this action." });
 
 		}
 
@@ -224,11 +301,16 @@ async function updateReview(req: Request, res: Response): Promise<Response<any>>
 
 async function updateReviewAttribute(req: Request, res: Response): Promise<Response<any>> {
 
-	let reviewAttribute = await ReviewAttribute.findOne(req.params.id);
+	let reviewAttribute = await ReviewAttribute.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!reviewAttribute) {
 
-		return res.status(404).json({ status: "error", statusCode: 404, message: "Review attribute not found." });
+		return res.status(404).json({ status: "error", statusCode: 404, message: "Review attribute not found or you are not allowed to perform this action." });
 
 	}
 
@@ -266,11 +348,16 @@ async function updateReviewAttribute(req: Request, res: Response): Promise<Respo
 
 async function updateRol(req: Request, res: Response): Promise<Response<any>> {
 
-	let rol = await Rol.findOne(req.params.id);
+	let rol = await Rol.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!rol) {
 
-		return res.status(404).json({ status: "error", statusCode: 404, message: "Rol not found." });
+		return res.status(404).json({ status: "error", statusCode: 404, message: "Rol not found or you are not allowed to perform this action." });
 
 	}
 
@@ -322,13 +409,66 @@ async function updateRol(req: Request, res: Response): Promise<Response<any>> {
 
 }
 
-async function updateTeam(req: Request, res: Response): Promise<Response<any>> {
+async function updateTeam(req: any, res: Response): Promise<Response<any>> {
 
-	let team = await Team.findOne(req.params.id);
+	let team = await Team.findOne({
+		where: {
+			id: req.params.id && In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!team) {
 
-		return res.status(404).json({ status: "error", statusCode: 404, message: "Team not found." });
+		return res.status(404).json({ status: "error", statusCode: 404, message: "Team not found or you are not allowed to perform this action." });
+
+	}
+
+	if (req.files.length) {
+
+		let requestImages = req.files.map(file => uuidv5(file.originalname, process.env.NAMESPACE))
+
+		let deletedImages = team.images.filter(imgCode => !requestImages.includes(imgCode));
+
+		for (let image of deletedImages.filter(img => img != process.env.DEFAULT_IMAGE_ID)) {
+
+			globalThis.S3.putObjectTagging({
+
+				Bucket: process.env.BUCKET_NAME,
+				Key: image,
+				Tagging: {
+					TagSet: [
+						{
+							Key: 'deleted',
+							Value: '1'
+						}
+					]
+				}
+
+			}, () => { })
+
+		}
+
+		for (let file of req.files) {
+
+			let imageId = uuidv5(file.originalname, process.env.NAMESPACE);
+
+			if (team.images.includes(imageId)) {
+				continue;
+			}
+
+			globalThis.S3.putObject({
+				Bucket: process.env.BUCKET_NAME,
+				Key: imageId,
+				ContentType: file.mimetype,
+				ContentLength: file.size,
+				Body: await createReadStream(file.path)
+			}, () => { });
+
+		}
+
+		team.images = requestImages;
+
+		emptyPath(process.env.IMAGE_PATH)
 
 	}
 
@@ -343,22 +483,23 @@ async function updateTeam(req: Request, res: Response): Promise<Response<any>> {
 
 }
 
-async function updateUser(req: Request, res: Response): Promise<Response<any>> {
-	
+async function updateUser(req: any, res: Response): Promise<Response<any>> {
+
 	let user = await User.findOne({
 		where: {
-			id: req.params.id
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
 		},
 		relations: ["roles"]
 	});
 
-	if (!user) {
+	if (!user && res.locals.session.user.id != req.params.id) {
 
-		return res.status(404).json({ status: "error", statusCode: 404, message: "User not found." });
+		return res.status(404).json({ status: "error", statusCode: 404, message: "User not found or you are not allowed to perform this action." });
 
 	}
 
-	if (req.body.roles) {
+	if (req.body.roles && res.locals.session.user.id != req.params.id) {
 
 		let existingRoles = await Rol.find({
 			where: {
@@ -411,7 +552,7 @@ async function updateUser(req: Request, res: Response): Promise<Response<any>> {
 
 		if (!valid) {
 
-			return res.status(403).json({ status: "error", statusCode: 403, message: "You can update use that roles for this user" });
+			return res.status(403).json({ status: "error", statusCode: 403, message: "You can not update use that roles for this user" });
 
 		}
 
@@ -419,7 +560,56 @@ async function updateUser(req: Request, res: Response): Promise<Response<any>> {
 
 	}
 
-	if (req.body.userTypeId) {
+	if (req.files.length) {
+
+		let requestImages = req.files.map(file => uuidv5(file.originalname, process.env.NAMESPACE))
+
+		let deletedImages = user.images.filter(imgCode => !requestImages.includes(imgCode));
+
+		for (let image of deletedImages.filter(img => img != process.env.DEFAULT_IMAGE_ID)) {
+
+			globalThis.S3.putObjectTagging({
+
+				Bucket: process.env.BUCKET_NAME,
+				Key: image,
+				Tagging: {
+					TagSet: [
+						{
+							Key: 'deleted',
+							Value: '1'
+						}
+					]
+				}
+
+			}, () => { })
+
+		}
+
+		for (let file of req.files) {
+
+			let imageId = uuidv5(file.originalname, process.env.NAMESPACE);
+
+			if (user.images.includes(imageId)) {
+				continue;
+			}
+
+			globalThis.S3.putObject({
+				Bucket: process.env.BUCKET_NAME,
+				Key: imageId,
+				ContentType: file.mimetype,
+				ContentLength: file.size,
+				Body: await createReadStream(file.path)
+			}, () => { });
+
+		}
+
+		user.images = requestImages;
+
+		emptyPath(process.env.IMAGE_PATH)
+
+	}
+
+	if (req.body.userTypeId && res.locals.session.user.id != req.params.id) {
 		let userType = await UserType.findOne(req.body.userTypeId);
 		if (!userType) {
 			return res.status(400).json({ status: "error", statusCode: 400, message: "User tpye not found." });

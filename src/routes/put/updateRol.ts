@@ -9,7 +9,7 @@ class UpdateRol extends BaseRoute {
 		super();
 		this.path = "/roles/:id";
 		this.method = updateRol;
-		this.requestMethod = "patch";
+		this.requestMethod = "put";
 		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
 
 	}

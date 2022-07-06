@@ -10,7 +10,7 @@ class NewTeam extends BaseRoute {
 		this.path = "/teams";
 		this.method = postNewTeam;
 		this.requestMethod = "post";
-		this.middlewares = [jwtValidation, checkNecessaryBodyParams, filterAccesibleData];
+		this.middlewares = [jwtValidation, globalThis.upload.array("images"), checkNecessaryBodyParams, filterAccesibleData];
 
 	}
 

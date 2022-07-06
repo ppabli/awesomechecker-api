@@ -1,5 +1,9 @@
 import * as express from "express";
 import * as helmet from "helmet";
+import * as aws from 'aws-sdk';
+import * as cors from "cors";
+import * as multer from 'multer';
+
 import { createConnection, ConnectionOptions } from 'typeorm';
 import { Category } from "./entities/category";
 import { Page } from "./entities/page";
@@ -12,8 +16,11 @@ import { Team } from "./entities/team";
 import { User } from "./entities/user";
 import { logger } from "./libs/logger";
 import { MyRouter } from "./myRouter";
-import * as cors from "cors";
 import { UserType } from "./entities/userType";
+
+declare var S3;
+declare var upload;
+
 export class App {
 
 	private app: express.Application;
@@ -23,9 +30,14 @@ export class App {
 
 		logger.info(`Profile: ${process.env.profile}`);
 
+		globalThis.upload = multer({dest: process.env.IMAGE_PATH})
+
 		this.app = express();
 
 		let config: any = this.loadConfig();
+
+		globalThis.S3 = this.loadAWS()
+		logger.info('AWS loaded correctly');
 
 		this.loadEntities(config.dbConfig);
 
@@ -38,6 +50,22 @@ export class App {
 	public async start(config) {
 
 		await this.app.listen(config.port, () => { });
+
+	}
+
+	private loadAWS() {
+
+		if (process.env.PROFILE === 'DEV') {
+
+			return new aws.S3({
+				signatureVersion: "v4",
+				apiVersion: "2006-03-01",
+				accessKeyId: process.env.ACCESS_KEY_ID,
+				secretAccessKey: process.env.SECRET_ACCES_KEY,
+				region: "us-east-2",
+			})
+
+		}
 
 	}
 
@@ -87,7 +115,7 @@ export class App {
 				"entities": [
 					Review, ProductPage, Product, Category, Page, ReviewAttribute, User, Team, Rol, UserType
 				],
-				
+
 			}
 
 			config.dbConfig = dbConfig;

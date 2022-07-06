@@ -1,5 +1,4 @@
 import { encode, decode, TAlgorithm } from "jwt-simple";
-import { TeamModel } from "../models/team.model";
 import { UserModel } from '../models/user.model';
 
 class Session {

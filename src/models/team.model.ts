@@ -6,12 +6,14 @@ class SimpleTeamModel {
 	private id: number;
 	private name: string;
 	private token: string;
+	private images: string[];
 
 	constructor(dbTeam: Team) {
 
 		this.id = dbTeam.id;
 		this.name = dbTeam.name;
 		this.token = dbTeam.token;
+		this.images = dbTeam.images;
 
 	}
 
@@ -25,6 +27,10 @@ class SimpleTeamModel {
 
 	public getToken(): string {
 		return this.token;
+	}
+
+	public getImges(): string[] {
+		return this.images;
 	}
 
 }

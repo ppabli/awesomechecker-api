@@ -10,7 +10,7 @@ class NewProduct extends BaseRoute {
 		this.path = "/products";
 		this.method = postNewProduct;
 		this.requestMethod = "post";
-		this.middlewares = [jwtValidation, checkNecessaryBodyParams, filterAccesibleData];
+		this.middlewares = [jwtValidation, globalThis.upload.array("images"), checkNecessaryBodyParams, filterAccesibleData];
 
 	}
 

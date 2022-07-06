@@ -1,5 +1,5 @@
 import { updateCategory, updateProduct } from "../../controllers/put_controller";
-import { filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
+import { checkNecessaryParams, filterAccesibleData, jwtValidation } from "../../middlewares/middlewares";
 import { BaseRoute } from "../BaseRoute";
 
 class UpdateProduct extends BaseRoute {
@@ -9,8 +9,8 @@ class UpdateProduct extends BaseRoute {
 		super();
 		this.path = "/products/:id";
 		this.method = updateProduct;
-		this.requestMethod = "patch";
-		this.middlewares = [jwtValidation, filterAccesibleData];
+		this.requestMethod = "put";
+		this.middlewares = [jwtValidation, globalThis.upload.array("images"), checkNecessaryParams, filterAccesibleData];
 
 	}
 

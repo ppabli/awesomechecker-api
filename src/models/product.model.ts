@@ -7,6 +7,7 @@ class ProductModel extends BaseModel {
 	private description: string;
 	private teamId: number;
 	private categoryId: number;
+	private images: string[];
 
 	constructor(product: Product) {
 
@@ -16,6 +17,7 @@ class ProductModel extends BaseModel {
 		this.description = product.description;
 		this.teamId = product.teamId;
 		this.categoryId = product.categoryId;
+		this.images = product.images;
 
 	}
 
@@ -29,6 +31,10 @@ class ProductModel extends BaseModel {
 
 	public getTeamId(): number {
 		return this.teamId;
+	}
+
+	public getImages(): string[] {
+		return this.images;
 	}
 
 	public getCategoryId(): number {

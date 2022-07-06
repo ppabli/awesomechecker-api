@@ -12,6 +12,7 @@ class UserModel extends BaseModel {
 	private email: string;
 	private roles: RolModel[];
 	private userType: UserTypeModel;
+	private images: string[];
 
 	constructor(dbUser: User) {
 
@@ -19,6 +20,7 @@ class UserModel extends BaseModel {
 
 		this.user = dbUser.user;
 		this.email = dbUser.email;
+		this.images = dbUser.images;
 
 		if (dbUser.teams) {
 
@@ -38,6 +40,10 @@ class UserModel extends BaseModel {
 
 		}
 
+	}
+
+	public getImges(): string[] {
+		return this.images;
 	}
 
 	public getUser(): string {

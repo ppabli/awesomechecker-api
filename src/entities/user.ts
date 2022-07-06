@@ -11,6 +11,9 @@ class User extends Base {
 	@Column()
 	user: string;
 
+	@Column('text', {array: true})
+	images: string[]
+
 	@Column()
 	email: string;
 

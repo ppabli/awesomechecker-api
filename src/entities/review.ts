@@ -6,7 +6,7 @@ import { Team } from './team';
 @Entity("reviews", { schema: Base.schemaName })
 class Review extends Base {
 
-	public static necessaryPostParams: Record<string, any> = { "teamId": Number, "productPage": Number, "value": Number };
+	public static necessaryPostParams: Record<string, any> = { "teamId": Number, "productPageId": Number, "value": Number };
 
 	@Column()
 	teamId: number;

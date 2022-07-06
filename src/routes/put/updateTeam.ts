@@ -9,8 +9,8 @@ class UpdateTeam extends BaseRoute {
 		super();
 		this.path = "/teams/:id";
 		this.method = updateTeam;
-		this.requestMethod = "patch";
-		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
+		this.requestMethod = "put";
+		this.middlewares = [jwtValidation, globalThis.upload.array("images"), checkNecessaryParams, filterAccesibleData];
 
 	}
 

@@ -9,7 +9,7 @@ class UpdateProductPage extends BaseRoute {
 		super();
 		this.path = "/productPages/:id";
 		this.method = updateProductPage;
-		this.requestMethod = "patch";
+		this.requestMethod = "put";
 		this.middlewares = [jwtValidation, checkNecessaryParams, filterAccesibleData];
 
 	}

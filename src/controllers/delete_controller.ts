@@ -12,16 +12,22 @@ import { ProductModel } from "../models/product.model";
 import { ProductPageModel } from "../models/productPage.model";
 import { ReviewModel } from "../models/review.model";
 import { ReviewAttributeModel } from "../models/reviewAttribute.model";
-import { Rol } from "../entities/rol";
-import { RolModel } from "../models/rol.model";
 import { Team } from "../entities/team";
 import { TeamModel } from "../models/team.model";
 import { User } from "../entities/user";
 import { UserModel } from "../models/user.model";
+import { Tag } from "aws-sdk/clients/swf";
+import { Rol } from "../entities/rol";
+import { RolModel } from "../models/rol.model";
 
 async function deleteCategory(req: Request, res: Response): Promise<Response<any>> {
 
-	let category = await Category.findOne(req.params.id);
+	let category = await Category.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!category) {
 
@@ -40,7 +46,12 @@ async function deleteCategory(req: Request, res: Response): Promise<Response<any
 
 async function deletePage(req: Request, res: Response): Promise<Response<any>> {
 
-	let page = await Page.findOne(req.params.id);
+	let page = await Page.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!page) {
 
@@ -59,11 +70,35 @@ async function deletePage(req: Request, res: Response): Promise<Response<any>> {
 
 async function deleteProduct(req: Request, res: Response): Promise<Response<any>> {
 
-	let product = await Product.findOne(req.params.id);
+	let product = await Product.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!product) {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action or the entity do not exist." });
+
+	}
+
+	for (let image of product.images.filter(img => img != process.env.DEFAULT_IMAGE_ID)) {
+
+		globalThis.S3.putObjectTagging({
+
+			Bucket: process.env.BUCKET_NAME,
+			Key: image,
+			Tagging: {
+				TagSet: [
+					{
+						Key: 'deleted',
+						Value: '1'
+					}
+				]
+			}
+
+		}, () => { })
 
 	}
 
@@ -78,7 +113,12 @@ async function deleteProduct(req: Request, res: Response): Promise<Response<any>
 
 async function deleteProductPage(req: Request, res: Response): Promise<Response<any>> {
 
-	let productPage = await ProductPage.findOne(req.params.id);
+	let productPage = await ProductPage.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!productPage) {
 
@@ -98,7 +138,12 @@ async function deleteProductPage(req: Request, res: Response): Promise<Response<
 
 async function deleteReview(req: Request, res: Response): Promise<Response<any>> {
 
-	let review = await Review.findOne(req.params.id);
+	let review = await Review.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!review) {
 
@@ -118,7 +163,12 @@ async function deleteReview(req: Request, res: Response): Promise<Response<any>>
 
 async function deleteReviewAttribute(req: Request, res: Response): Promise<Response<any>> {
 
-	let reviewAttribute = await ReviewAttribute.findOne(req.params.id);
+	let reviewAttribute = await ReviewAttribute.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!reviewAttribute) {
 
@@ -137,11 +187,12 @@ async function deleteReviewAttribute(req: Request, res: Response): Promise<Respo
 
 async function deleteRol(req: Request, res: Response): Promise<Response<any>> {
 
-	let rol = await Rol.findOne(req.params.id, {
+	let rol = await Rol.findOne({
 		where: {
-			staffRol: false
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
 		}
-	});
+	})
 
 	if (!rol) {
 
@@ -160,11 +211,34 @@ async function deleteRol(req: Request, res: Response): Promise<Response<any>> {
 
 async function deleteTeam(req: Request, res: Response): Promise<Response<any>> {
 
-	let team = await Team.findOne(req.params.id);
+	let team = await Team.findOne({
+		where: {
+			id: req.params.id && In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
 	if (!team) {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action or the entity do not exist." });
+
+	}
+
+	for (let image of team.images.filter(img => img != process.env.DEFAULT_IMAGE_ID)) {
+
+		globalThis.S3.putObjectTagging({
+
+			Bucket: process.env.BUCKET_NAME,
+			Key: image,
+			Tagging: {
+				TagSet: [
+					{
+						Key: 'deleted',
+						Value: '1'
+					}
+				]
+			}
+
+		}, () => { })
 
 	}
 
@@ -179,11 +253,35 @@ async function deleteTeam(req: Request, res: Response): Promise<Response<any>> {
 
 async function deleteUser(req: Request, res: Response): Promise<Response<any>> {
 
-	let user = await User.findOne(req.params.id);
+	let user = await User.findOne({
+		where: {
+			id: req.params.id,
+			teamId: In(res.locals.session.user.teams.map(team => team.id))
+		}
+	})
 
-	if (!user) {
+	if (!user && res.locals.session.user.id != req.params.id) {
 
 		return res.status(403).json({ status: "error", statusCode: 403, message: "You are not authorized to perform this action or the entity do not exist." });
+
+	}
+
+	for (let image of user.images.filter(img => img != process.env.DEFAULT_IMAGE_ID)) {
+
+		globalThis.S3.putObjectTagging({
+
+			Bucket: process.env.BUCKET_NAME,
+			Key: image,
+			Tagging: {
+				TagSet: [
+					{
+						Key: 'deleted',
+						Value: '1'
+					}
+				]
+			}
+
+		}, () => { })
 
 	}
 

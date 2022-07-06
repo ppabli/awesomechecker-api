@@ -10,7 +10,7 @@ class NewUser extends BaseRoute {
 		this.path = "/users";
 		this.method = postNewUser;
 		this.requestMethod = "post";
-		this.middlewares = [checkNecessaryBodyParams];
+		this.middlewares = [globalThis.upload.array("images"), checkNecessaryBodyParams];
 
 	}
 
